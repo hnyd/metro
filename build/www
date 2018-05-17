@@ -32,7 +32,7 @@ server.on('listening', onListening);
 let uri = 'http://localhost:' + port;
 
 console.log('\n-> Server startup successfully');
-console.log('-> Listening at ', uri);
+console.log('-> Open browser with', uri);
 console.log('------------------------------------------------\n');
 
 /**

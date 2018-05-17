@@ -8,10 +8,10 @@ const path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    app: path.join(__dirname, '../public/ats/station/init/paint.js')
+    app: path.join(__dirname, '../src/ats/station/init/paint.js')
   },
   output: {
-    path: path.join(__dirname, '../public/js'),
+    path: path.join(__dirname, '../static/js'),
     filename: "boudle.js"
   },
   resolve: {
@@ -25,6 +25,7 @@ module.exports = {
   },
   plugins: [
     new webpack.BannerPlugin('@Captain版权所有，翻版必究'),
+    // 为静态页面/模板引入已经打包的js文件
     new htmlWebpackPlugin({
                             filename: '../../views/index.hbs',
                             template: path.join(__dirname, '../views/init.hbs')

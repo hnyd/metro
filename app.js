@@ -10,9 +10,9 @@ var app = express();
 // /*
 // 初始化axios
 //  */
-// var axios = require('./public/ats/network/netService');
-// // var util = require('./public/ats/network/utils');
-// import util from './public/ats/network/utils';
+// var axios = require('./src/ats/network/netService');
+// // var util = require('./src/ats/network/utils');
+// import util from './src/ats/network/utils';
 //
 // util.setAxios(axios);
 
@@ -20,16 +20,16 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// uncomment after placing your favicon in /src
+//app.use(favicon(path.join(__dirname, 'src', 'favicon.ico')));
 // 配置morgan log
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(lessMiddleware(path.join(__dirname, 'public')));
+app.use(lessMiddleware(path.join(__dirname, 'static')));
 // 设置静态文件路径，并自定义前缀 eg: localhost:3000/XXX/js/e.js
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'static')));
 
 // 配置路由
 let routes = require('./routes/index');

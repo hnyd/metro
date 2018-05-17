@@ -3,7 +3,7 @@
  */
 import axios from '../../network/netService.js'
 
-axios.get('/').then(function (response) {
+axios.get('/http').then(function (response) {
   console.log('response: ', response);
 }).catch(function (error) {
   console.log('error: ', error);

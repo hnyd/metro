@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "webpack --config ./build/webpack.config.js && node ./bin/www",
-    "babel": "babel-node ./bin/www",
+    "start": "webpack --config ./build/webpack.config.js && node ./build/www",
+    "babel": "babel-node ./build/www",
     "webpack": "webpack --config ./build/webpack.config.js"
   },
   "dependencies": {
