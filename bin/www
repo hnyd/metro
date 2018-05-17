@@ -29,6 +29,12 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+let uri = 'http://localhost:' + port;
+
+console.log('\n-> Server startup successfully');
+console.log('-> Listening at ', uri);
+console.log('------------------------------------------------\n');
+
 /**
  * Normalize a port into a number, string, or false.
  */
@@ -59,8 +65,8 @@ function onError(error) {
   }
 
   var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+      ? 'Pipe ' + port
+      : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -84,7 +90,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }

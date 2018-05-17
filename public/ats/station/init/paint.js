@@ -1,9 +1,14 @@
 /**
  * Created by Captain on 2018/3/14 16:09.
  */
-// let link = require('/service/link/link');
-// import link from '/service/link/link';
-// import test from '../../../service/link/test';
+import axios from '../../network/netService.js'
+
+axios.get('/').then(function (response) {
+  console.log('response: ', response);
+}).catch(function (error) {
+  console.log('error: ', error);
+});
+
 let canvas = document.getElementById('canvas');
 // canvas元素绘图表面的宽度
 canvas.width = 3200;

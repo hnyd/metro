@@ -4,7 +4,7 @@
 let fs = require('fs');
 let path = require('path');
 let parser = require('xml2js').Parser({explicitArray: false, ignoreAttrs: true});
-let link = require('./link');
+let link = require('./ats');
 
 module.exports = function (callback) {
   fs.readFile(path.join(__dirname, '../../public', 'basic', 'LinkStructClass.xml'),
