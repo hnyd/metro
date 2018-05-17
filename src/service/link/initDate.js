@@ -7,12 +7,12 @@ let parser = require('xml2js').Parser({explicitArray: false, ignoreAttrs: true})
 let link = require('./ats');
 
 module.exports = function (callback) {
-  fs.readFile(path.join(__dirname, '../../static', 'basic', 'LinkStructClass.xml'),
+  fs.readFile(path.join(__dirname, '../../../static', 'assets', 'LinkStructClass.xml'),
               function (err, data) {
                 parser.parseString(data, function (err, result) {
                   // console.log(result);
                   link.setList(result);
-                  console.log(link.getList());
+                  console.log('link structure: ', link.getList());
                   let line = JSON.stringify(result);
                   callback(line);
                 });

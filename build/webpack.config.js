@@ -8,7 +8,7 @@ const path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    app: path.join(__dirname, '../src/ats/station/init/paint.js')
+    app: path.join(__dirname, '../src/station/init/index.js')
   },
   output: {
     path: path.join(__dirname, '../static/js'),

@@ -12,4 +12,3 @@ let service = axios.create(
     });
 
 export default service;
-// module.exports = service;
