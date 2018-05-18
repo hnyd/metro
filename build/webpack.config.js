@@ -5,17 +5,26 @@ const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
+let rootPath = path.join(__dirname, '..');
+let srcPath = path.join(rootPath, 'src');
+
 module.exports = {
   mode: 'development',
   entry: {
-    app: path.join(__dirname, '../src/station/init/index.js')
+    app: path.join(srcPath, 'main.js')
   },
   output: {
-    path: path.join(__dirname, '../static/js'),
+    path: path.join(rootPath, 'static/js'),
     filename: "boudle.js"
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['.js'],
+    alias: {
+      netService: path.join(srcPath, 'network/netService.js'),
+      initStation: path.join(srcPath, 'station/init/index.js'),
+      stationUtil: path.join(srcPath, 'util/stationUtil.js'),
+      sysUtil: path.join(srcPath, 'util/sysUtil.js')
+    }
   },
   module: {
     rules: [{
@@ -27,8 +36,8 @@ module.exports = {
     new webpack.BannerPlugin('@Captain版权所有，翻版必究'),
     // 为静态页面/模板引入已经打包的js文件
     new htmlWebpackPlugin({
-                            filename: '../../views/index.hbs',
-                            template: path.join(__dirname, '../views/init.hbs')
+                            filename: path.join(rootPath, 'views/index.hbs'),
+                            template: path.join(rootPath, 'views/init.hbs')
                           }),
   ],
 };

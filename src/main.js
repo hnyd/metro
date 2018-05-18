@@ -1,7 +1,13 @@
 /**
+ * 核心控制
  * Created by Captain on 2018/5/17 8:58.
  */
-import axios from './network/netService'
+import {canvas} from 'stationUtil'
+import {axios} from 'sysUtil'
+import initStation from 'initStation'
+
+// 初始站场
+initStation(canvas);
 
 /*
 axios测试
