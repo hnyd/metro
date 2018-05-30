@@ -3,17 +3,47 @@
  * Created by Captain on 2018/3/14 16:09.
  */
 
+import path from 'path'
+import xmlParser from 'xml2js'
+import {axios} from 'sysUtil'
+import link from '../../model/link.js'
+
+let parser = xmlParser.Parser({explicitArray: false, ignoreAttrs: true});
+
 /**
  * 站场初始化
  * @param canvas
  */
 let initStation = function (canvas) {
 
+  // 初始化站场数据
+  fetchATSData();
+
+  initTest();
+
   // 绘制背景
-  paintStation(canvas);
+  // paintStation(canvas);
 
   // todo
 };
+
+/**
+ * 初始化站场数据
+ */
+function fetchATSData() {
+  axios.get('/linkData').then(function (response) {
+    console.log('--> response: ', response);
+    let linkData = response.data;
+    link.setLinkData(linkData);
+  }).catch(function (error) {
+    console.log('--> error: ', error);
+  });
+}
+
+function initTest() {
+  let linkData = link.getLinkData();
+  
+}
 
 /**
  * 绘制战场背景

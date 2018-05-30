@@ -6,10 +6,7 @@ let initDate = require('../src/service/link/initDate');
 module.exports = function (app) {
 
   app.get('/', function (req, res, next) {
-    initDate(data => {
-      res.render('index', {title: 'index'});
-    });
-
+    res.render('index', {title: 'index'});
   });
 
   app.get('/http', function (req, res, next) {
@@ -17,5 +14,11 @@ module.exports = function (app) {
                message: 'hello world!'
              });
   });
+
+  app.get('/linkData', function (req, res, next) {
+    initDate(data => {
+      res.send(data);
+    })
+  })
 
 };

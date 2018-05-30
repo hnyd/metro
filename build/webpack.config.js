@@ -10,6 +10,7 @@ let srcPath = path.join(rootPath, 'src');
 
 module.exports = {
   mode: 'development',
+  target: "web",
   entry: {
     app: path.join(srcPath, 'main.js')
   },
@@ -29,11 +30,12 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
+      exclude: /node_modules/,
       use: "babel-loader"
     }]
   },
   plugins: [
-    new webpack.BannerPlugin('@Captain版权所有，翻版必究'),
+    new webpack.BannerPlugin('版权所有，翻版必究@Captain'),
     // 为静态页面/模板引入已经打包的js文件
     new htmlWebpackPlugin({
                             filename: path.join(rootPath, 'views/index.hbs'),

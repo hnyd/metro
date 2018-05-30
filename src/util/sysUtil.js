@@ -2,10 +2,10 @@
  * 系统工具类
  * Created by Captain on 2018/5/18 9:58.
  */
-import path from 'path'
 import axios from 'axios'
+import path from 'path'
 
-let rootPath = path.join(__dirname, '..');
+let rootPath = path.join(__dirname, '../..');
 let srcPath = path.join(rootPath, 'src');
 
 /**

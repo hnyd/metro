@@ -6,14 +6,14 @@ import {canvas} from 'stationUtil'
 import {axios} from 'sysUtil'
 import initStation from 'initStation'
 
-// 初始站场
+// 初始化站场
 initStation(canvas);
 
 /*
 axios测试
  */
-axios.get('/http').then(function (response) {
-  console.log('response: ', response);
-}).catch(function (error) {
-  console.log('error: ', error);
-});
+// axios.get('/http').then(function (response) {
+//   console.log('response: ', response);
+// }).catch(function (error) {
+//   console.log('error: ', error);
+// });
