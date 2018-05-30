@@ -11,4 +11,23 @@ canvas.width = 3200;
 canvas.height = 600;
 let cvs = canvas.getContext('2d');
 
-export {cvs as canvas}
+/**
+ * 将十进制颜色转换为十六进制
+ * @param colorInt
+ * @returns {string}
+ */
+let colorTrans = function (colorString) {
+  if (colorString.startsWith('-')) {
+    colorString = colorString.substring(1, colorString.length);
+  }
+  const colorInt = parseInt(colorString, 10);
+  if (colorInt > 16777215) {
+    console.log('--> [ERROR]', 'the color value is out of bounds (FFFFFF)');
+    return '#FFFFFF';
+  } else {
+    const colorHex = colorInt.toString(16);
+    return '#' + colorHex;
+  }
+};
+
+export {cvs as canvas, colorTrans}
