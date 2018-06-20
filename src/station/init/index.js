@@ -7,42 +7,93 @@ import path from 'path'
 import xmlParser from 'xml2js'
 import {axios} from 'sysUtil'
 import link from '../../model/link.js'
+import {system} from "../../util/sysUtil";
 
 let parser = xmlParser.Parser({explicitArray: false, ignoreAttrs: true});
+let cvs;
 
 /**
  * 站场初始化
- * @param canvas
+ * @param graphContext
  */
-let initStation = function (canvas) {
+let initStation = function (graphContext) {
 
-  // 初始化站场数据
-  fetchATSData();
+  // 初始化站场
+  fetchATSData().then(function (value) {
+    // 初始化物理数据
+    formateData(value, graphContext);
+    // 绘制站场
+    paintStation();
+  }, function (error) {
+    console.log('--> error: ', error);
+  });
 
-  initTest();
-
-  // 绘制背景
-  // paintStation(canvas);
-
-  // todo
 };
 
 /**
  * 初始化站场数据
  */
 function fetchATSData() {
-  axios.get('/linkData').then(function (response) {
-    console.log('--> response: ', response);
-    let linkData = response.data;
-    link.setLinkData(linkData);
-  }).catch(function (error) {
-    console.log('--> error: ', error);
+  return new Promise((resolve, reject) => {
+    axios.get('/linkData').then(function (response) {
+      console.log('--> response: ', response);
+      let linkData = response.data;
+      resolve(linkData);
+    }).catch(function (error) {
+      console.log('--> fetchATSData error: ', error);
+      reject(error);
+    });
   });
 }
 
-function initTest() {
+/**
+ * 格式化数据
+ * X: min: -418.956177   max: 11504.8291
+ * Y: min: 638.2352      max: 1082.57776
+ */
+function formateData(linkData, graphContext) {
+  let maxX = 0;
+  let maxY = 0;
+  let minY = 1000;
+  for (let key in linkData) {
+    let value = linkData[key];
+    for (let k in value) {
+      let code = k.charAt(0);
+      if (code === code.toUpperCase()) {
+        delete value[k];
+      }
+    }
+    minY = value['pointList'][0]['Y'] < minY ? value['pointList'][0]['Y'] : minY;
+    minY = value['pointList'][1]['Y'] < minY ? value['pointList'][1]['Y'] : minY;
+    maxX = value['pointList'][0]['X'] > maxX ? value['pointList'][0]['X'] : maxX;
+    maxX = value['pointList'][1]['X'] > maxX ? value['pointList'][1]['X'] : maxX;
+    maxY = value['pointList'][0]['Y'] > maxY ? value['pointList'][0]['Y'] : maxY;
+    maxY = value['pointList'][1]['Y'] > maxY ? value['pointList'][1]['Y'] : maxY;
+  }
+  // 根据长、宽初始化canvas画布，并获取canvas 2d画笔
+  cvs = graphContext.getCVS(maxX + 300, (maxY - minY) + 400);
+  console.log('--> formated data:', linkData);
+  link.setLinkData(linkData);
+}
+
+/**
+ * 绘制站场
+ */
+function paintStation() {
+  cvs.lineWidth = 10;
+  cvs.beginPath();
   let linkData = link.getLinkData();
-  
+  for (let key in linkData) {
+    let poingList = linkData[key]['pointList'];
+    let x1 = poingList[0]['X'];
+    let y1 = poingList[0]['Y'] - 500;
+    let x2 = poingList[1]['X'];
+    let y2 = poingList[1]['Y'] - 500;
+    cvs.moveTo(x1, y1);
+    cvs.lineTo(x2, y2);
+    cvs.strokeStyle = '#092bff';
+    cvs.stroke();
+  }
 }
 
 /**

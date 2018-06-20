@@ -5,16 +5,25 @@
 
 // 绘图工具canvas 2d
 let canvas = document.getElementById('canvas');
-// canvas元素绘图表面的宽度
-canvas.width = 3200;
-// canvas元素绘图表面的高度
-canvas.height = 600;
-let cvs = canvas.getContext('2d');
+
+/**
+ * 初始化canvas画布
+ * @param width
+ * @param heigh
+ * @returns canvas 2d画笔
+ */
+let getCVS = function (width, heigh) {
+  // canvas元素绘图表面的宽度
+  canvas.width = width;
+  // canvas元素绘图表面的高度
+  canvas.height = heigh;
+  return canvas.getContext('2d');
+};
 
 /**
  * 将十进制颜色转换为十六进制
- * @param colorInt
- * @returns {string}
+ * @param colorString
+ * @returns 颜色16进制格式，like "#FFFFFF"
  */
 let colorTrans = function (colorString) {
   if (colorString.startsWith('-')) {
@@ -30,4 +39,4 @@ let colorTrans = function (colorString) {
   }
 };
 
-export {cvs as canvas, colorTrans}
+export {getCVS, colorTrans}
