@@ -5,6 +5,7 @@
 
 // 绘图工具canvas 2d
 let canvas = document.getElementById('canvas');
+let cvs;
 
 /**
  * 初始化canvas画布
@@ -12,12 +13,13 @@ let canvas = document.getElementById('canvas');
  * @param heigh
  * @returns canvas 2d画笔
  */
-let getCVS = function (width, heigh) {
+let initCVS = function (width, heigh) {
   // canvas元素绘图表面的宽度
   canvas.width = width;
   // canvas元素绘图表面的高度
   canvas.height = heigh;
-  return canvas.getContext('2d');
+  cvs = canvas.getContext('2d');
+  return cvs;
 };
 
 /**
@@ -39,4 +41,4 @@ let colorTrans = function (colorString) {
   }
 };
 
-export {getCVS, colorTrans}
+export {initCVS, cvs, colorTrans}

@@ -71,7 +71,7 @@ function formateData(linkData, graphContext) {
     maxY = value['pointList'][1]['Y'] > maxY ? value['pointList'][1]['Y'] : maxY;
   }
   // 根据长、宽初始化canvas画布，并获取canvas 2d画笔
-  cvs = graphContext.getCVS(maxX + 300, (maxY - minY) + 400);
+  cvs = graphContext.initCVS(maxX + 300, (maxY - minY) + 400);
   console.log('--> formated data:', linkData);
   link.setLinkData(linkData);
 }
@@ -100,7 +100,7 @@ function paintStation() {
  * 绘制战场背景
  * @param canvas
  */
-function paintStation(canvas) {
+function tmp(canvas) {
   canvas.lineWidth = 10;
   canvas.beginPath();
   canvas.moveTo(100, 100);
