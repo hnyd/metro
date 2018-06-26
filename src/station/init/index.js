@@ -9,8 +9,11 @@ import {axios} from 'sysUtil'
 import link from '../../model/link.js'
 import {system} from "../../util/sysUtil";
 
+import {fabric} from 'fabric'
+
 let parser = xmlParser.Parser({explicitArray: false, ignoreAttrs: true});
 let cvs;
+let fcLineList = [];
 
 /**
  * 站场初始化
@@ -23,12 +26,99 @@ let initStation = function (graphContext) {
     // 初始化物理数据
     formateData(value, graphContext);
     // 绘制站场
-    paintStation();
+    // paintStation();
+
+    fabricTest();
+
   }, function (error) {
     console.log('--> error: ', error);
   });
 
 };
+
+function fabricTest() {
+  let fc = new fabric.Canvas('canvas');
+  // create a rectangle object
+  // var rect = new fabric.Rect(
+  //     {
+  //       left: 100,
+  //       top: 100,
+  //       fill: '#FFFFFF',
+  //       width: 20,
+  //       height: 20,
+  //
+  //     });
+  // rect.on('selected', function() {//选中监听事件
+  //   console.log('selected a rectangle');
+  // });
+  // // "add" rectangle onto canvas
+  // fc.add(rect);
+
+  // fc.on('mouse:move', function (options) {
+  //   console.log('--> options: ', options);
+  //   if (options.target && options.target.stroke) {
+  //     // options.target.stroke = '#FF1B09';
+  //     options.target.set(
+  //         {
+  //           stroke: '#FF1B09'
+  //         });
+  //   }
+  // });
+
+  fc.fireRightClick = true;
+  fc.selection = false;
+
+  fc.on('mouse:over', function (options) {
+    if (options.target && options.target.stroke) {
+      // options.target.stroke = '#FF1B09';
+      console.log('--> set option stroke to red!');
+      options.target.set(
+          {
+            stroke: '#FF1B09'
+          });
+      // let path = new fabric.Path('M ' + options.target.x1 + ' ' + options.target.y1
+      //                            + ' L ' + options.target.x2 + ' ' + options.target.y2 + ' z');
+      // path.set({stroke: 'green', opacity: 0.5});
+      // fc.add(path);
+    }
+    console.log('--> options: ', options);
+  });
+  fc.on('mouse:out', function (options) {
+    if (options.target && options.target.stroke) {
+      // options.target.stroke = '#FF1B09';
+      console.log('--> set option stroke to blue!');
+      options.target.set(
+          {
+            stroke: '#092bff'
+          });
+    }
+    console.log('--> options: ', options);
+  });
+
+  let option = {
+    // left: 170,
+    // top: 150,
+    strokeWidth: 8,
+    stroke: '#092bff',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  };
+
+  let linkData = link.getLinkData();
+  for (let key in linkData) {
+    let pointList = linkData[key]['pointList'];
+    let x1 = pointList[0]['X'];
+    let y1 = pointList[0]['Y'] - 500;
+    let x2 = pointList[1]['X'];
+    let y2 = pointList[1]['Y'] - 500;
+    let line = new fabric.Line([x1, y1, x2, y2], option);
+    fcLineList.push(line);
+    fc.add(line);
+  }
+}
 
 /**
  * 初始化站场数据
@@ -84,11 +174,11 @@ function paintStation() {
   cvs.beginPath();
   let linkData = link.getLinkData();
   for (let key in linkData) {
-    let poingList = linkData[key]['pointList'];
-    let x1 = poingList[0]['X'];
-    let y1 = poingList[0]['Y'] - 500;
-    let x2 = poingList[1]['X'];
-    let y2 = poingList[1]['Y'] - 500;
+    let pointList = linkData[key]['pointList'];
+    let x1 = pointList[0]['X'];
+    let y1 = pointList[0]['Y'] - 500;
+    let x2 = pointList[1]['X'];
+    let y2 = pointList[1]['Y'] - 500;
     cvs.moveTo(x1, y1);
     cvs.lineTo(x2, y2);
     cvs.strokeStyle = '#092bff';

@@ -6,15 +6,26 @@ let path = require('path');
 let parser = require('xml2js').Parser({explicitArray: false, ignoreAttrs: true});
 
 module.exports = function (callback) {
-  fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
-              function (err, data) {
-                let val = JSON.parse(data);
-                callback(val);
-                // parser.parseString(data, function (err, result) {
-                //   console.log('--> fs result: ', result);
-                //   let line = JSON.stringify(result);
-                //   console.log('--> line: ', line);
-                //   callback(line);
-                // });
-              })
+  new Promise((resolve, reject) => {
+    let lineData, stationData;
+    fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
+                function (err, data) {
+                  lineData = JSON.parse(data);
+                });
+    fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
+                function (err, data) {
+                  stationData = JSON.parse(data);
+                });
+  }).then(function (value) {
+
+  }, function (error) {
+    console.log('--> error:', error);
+  });
+
+  // fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
+  //             function (err, data) {
+  //               let val = JSON.parse(data);
+  //               callback(val);
+  //             });
+
 };
