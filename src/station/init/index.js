@@ -55,11 +55,13 @@ function formateData(graphContext) {
 }
 
 function paint() {
+  // 初始化fabric
   initFabric();
 
   paintLine();
   paintStation();
   paintPsd();
+  paintPlatform();
 }
 
 /**
@@ -130,8 +132,6 @@ function initFabric() {
  */
 function paintLine() {
   let option = {
-    // left: 170,
-    // top: 150,
     strokeWidth: 8,
     stroke: '#0827ed',
     lockMovementX: true,
@@ -151,6 +151,24 @@ function paintLine() {
     let line = new fabric.Line([x1, y1, x2, y2], option);
     fcLineList.push(line);
     fc.add(line);
+    fc.add(new fabric.Line([x1 - 1, y1, x1, y1], {
+      strokeWidth: 8,
+      stroke: '#ffffff',
+      lockMovementX: true,
+      lockMovementY: true,
+      lockRotation: true,
+      lockScalingX: true,
+      lockScalingY: true
+    }));
+    fc.add(new fabric.Line([x2, y2, x2 + 1, y2], {
+      strokeWidth: 8,
+      stroke: '#ffffff',
+      lockMovementX: true,
+      lockMovementY: true,
+      lockRotation: true,
+      lockScalingX: true,
+      lockScalingY: true
+    }));
   }
 }
 
@@ -204,6 +222,29 @@ function paintPsd() {
     let entity = psdData[key];
     let x = entity['OriginX'] - 100;
     let y = entity['OriginY'] - 50;
+    option['strokeWidth'] = entity['Height'];
+    let width = entity['width'];
+    let line = new fabric.Line([x, y, x + width, y], option);
+    fc.add(line);
+  }
+}
+
+/**
+ * 绘制站台
+ */
+function paintPlatform() {
+  let option = {
+    stroke: '#ffffff',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  };
+  for (let key in platformData) {
+    let entity = platformData[key];
+    let x = entity['OriginX'] - 100;
+    let y = entity['OriginY'] - 63;
     option['strokeWidth'] = entity['Height'];
     let width = entity['width'];
     let line = new fabric.Line([x, y, x + width, y], option);
