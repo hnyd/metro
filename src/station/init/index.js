@@ -6,6 +6,7 @@
 import path from 'path'
 import xmlParser from 'xml2js'
 import {axios} from 'sysUtil'
+import {colorTrans} from "stationUtil"
 import link from '../../model/link.js'
 import {system} from "../../util/sysUtil";
 
@@ -13,7 +14,13 @@ import {fabric} from 'fabric'
 
 let parser = xmlParser.Parser({explicitArray: false, ignoreAttrs: true});
 let cvs;
+let fc;
 let fcLineList = [];
+let elementData,
+    lineData,
+    stationData = {}, // 车站
+    psdData = {}, // 屏蔽门
+    platformData = {};  // 站台
 
 /**
  * 站场初始化
@@ -23,12 +30,16 @@ let initStation = function (graphContext) {
 
   // 初始化站场
   fetchATSData().then(function (value) {
-    // 初始化物理数据
-    formateData(value, graphContext);
-    // 绘制站场
-    // paintStation();
+    lineData = value.lineData;
+    elementData = value.elementData;
 
-    fabricTest();
+    // 初始化物理数据
+    formateData(graphContext);
+
+    // 绘制站场
+    // canvasPaintStation();
+
+    paint();
 
   }, function (error) {
     console.log('--> error: ', error);
@@ -36,8 +47,26 @@ let initStation = function (graphContext) {
 
 };
 
-function fabricTest() {
-  let fc = new fabric.Canvas('canvas');
+function formateData(graphContext) {
+  // 初始化线路
+  formateLineData(graphContext);
+  // 数据分类整理
+  formateStationData();
+}
+
+function paint() {
+  initFabric();
+
+  paintLine();
+  paintStation();
+  paintPsd();
+}
+
+/**
+ * 初始化fabric绘图工具
+ */
+function initFabric() {
+  fc = new fabric.Canvas('canvas');
   // create a rectangle object
   // var rect = new fabric.Rect(
   //     {
@@ -65,8 +94,8 @@ function fabricTest() {
   //   }
   // });
 
-  fc.fireRightClick = true;
-  fc.selection = false;
+  fc.fireRightClick = true; // 画布支持右键单击事件
+  fc.selection = false; // 画布取消应用组选择
 
   fc.on('mouse:over', function (options) {
     if (options.target && options.target.stroke) {
@@ -94,12 +123,17 @@ function fabricTest() {
     }
     console.log('--> options: ', options);
   });
+}
 
+/**
+ * 绘制站场线路
+ */
+function paintLine() {
   let option = {
     // left: 170,
     // top: 150,
     strokeWidth: 8,
-    stroke: '#092bff',
+    stroke: '#0827ed',
     lockMovementX: true,
     lockMovementY: true,
     lockRotation: true,
@@ -121,14 +155,70 @@ function fabricTest() {
 }
 
 /**
+ * 绘制车站
+ */
+function paintStation() {
+  for (let key in stationData) {
+    if (stationData[key]['Content']) {
+      let content = stationData[key]['Content'];
+      let x = stationData[key]['OriginX'];
+      let y = stationData[key]['OriginY'];
+      let line = new fabric.Line([x, y, x + 10, y], {
+        strokeWidth: 1,
+        stroke: '#5a5a5a',
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      });
+      fc.add(line);
+      let text = fc.add(new fabric.Text(content, {
+        left: line.left,
+        top: line.top,
+        fontSize: stationData[key]['FontSize'],
+        fill: '#ffffff',
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      }));
+    }
+  }
+}
+
+/**
+ * 绘制屏蔽门
+ */
+function paintPsd() {
+  let option = {
+    stroke: '#80ff00',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  };
+  for (let key in psdData) {
+    let entity = psdData[key];
+    let x = entity['OriginX'] - 100;
+    let y = entity['OriginY'] - 50;
+    option['strokeWidth'] = entity['Height'];
+    let width = entity['width'];
+    let line = new fabric.Line([x, y, x + width, y], option);
+    fc.add(line);
+  }
+}
+
+/**
  * 初始化站场数据
  */
 function fetchATSData() {
   return new Promise((resolve, reject) => {
     axios.get('/linkData').then(function (response) {
       console.log('--> response: ', response);
-      let linkData = response.data;
-      resolve(linkData);
+      resolve(response.data);
     }).catch(function (error) {
       console.log('--> fetchATSData error: ', error);
       reject(error);
@@ -141,12 +231,12 @@ function fetchATSData() {
  * X: min: -418.956177   max: 11504.8291
  * Y: min: 638.2352      max: 1082.57776
  */
-function formateData(linkData, graphContext) {
+function formateLineData(graphContext) {
   let maxX = 0;
   let maxY = 0;
   let minY = 1000;
-  for (let key in linkData) {
-    let value = linkData[key];
+  for (let key in lineData) {
+    let value = lineData[key];
     for (let k in value) {
       let code = k.charAt(0);
       if (code === code.toUpperCase()) {
@@ -162,14 +252,36 @@ function formateData(linkData, graphContext) {
   }
   // 根据长、宽初始化canvas画布，并获取canvas 2d画笔
   cvs = graphContext.initCVS(maxX + 300, (maxY - minY) + 400);
-  console.log('--> formated data:', linkData);
-  link.setLinkData(linkData);
+  console.log('--> formated data:', lineData);
+  link.setLinkData(lineData);
 }
 
 /**
- * 绘制站场
+ * 数据分类整理
  */
-function paintStation() {
+function formateStationData() {
+  for (let key in elementData) {
+    if (elementData[key]['EFlag']) {
+      let content = elementData[key];
+      switch (elementData[key]['EFlag']) {
+        case 'Station': // 车站
+          stationData[key] = content;
+          break;
+        case 'Psd': // 屏蔽门
+          psdData[key] = content;
+          break;
+        case 'Platform':  // 站台
+          platformData[key] = content;
+          break;
+      }
+    }
+  }
+}
+
+/**
+ * canvas绘制站场
+ */
+function canvasPaintStation() {
   cvs.lineWidth = 10;
   cvs.beginPath();
   let linkData = link.getLinkData();

@@ -7,17 +7,24 @@ let parser = require('xml2js').Parser({explicitArray: false, ignoreAttrs: true})
 
 module.exports = function (callback) {
   new Promise((resolve, reject) => {
-    let lineData, stationData;
+    let lineData, elementData;
+    // 读取line数据
     fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
                 function (err, data) {
                   lineData = JSON.parse(data);
-                });
-    fs.readFile(path.join(__dirname, '../../../static', 'assets', 'elementList.txt'),
-                function (err, data) {
-                  stationData = JSON.parse(data);
+                  // 读取所有绘制数据
+                  fs.readFile(path.join(__dirname, '../../../static', 'assets', 'element.txt'),
+                              function (err, data) {
+                                elementData = JSON.parse(data);
+                                resolve(
+                                    {
+                                      lineData: lineData,
+                                      elementData: elementData
+                                    });
+                              });
                 });
   }).then(function (value) {
-
+    callback(value);
   }, function (error) {
     console.log('--> error:', error);
   });
