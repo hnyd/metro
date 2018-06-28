@@ -4,7 +4,11 @@
   <title>{{title}}</title>
 </head>
 <body>
-<canvas id="canvas" ></canvas>
+<canvas id="canvas"></canvas>
+<div id="menu">
+  <p id="lineIdClick">隐藏线路名</p>
+  <p id="switchIdClick">显示道岔名</p>
+</div>
 </body>
 </html>
 <!--<script type="module" src="/ats/station/init/index.js"></script>-->
@@ -19,6 +23,21 @@
   #canvas {
     /*width: 1000px;*/
     /*height: 1000px;*/
+  }
+
+  #menu {
+    background: rgb(255, 255, 255);
+    width: 120px;
+    position: absolute;
+    z-index: 9999;
+    visibility: hidden;
+  }
+
+  #menu p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 14px;
   }
 
 </style>
