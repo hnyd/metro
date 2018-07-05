@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>登录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="application/x-javascript"> addEventListener("load", function () {
+    setTimeout(hideURLbar, 0);
+  }, false);
+
+  function hideURLbar() {
+    window.scrollTo(0, 1);
+  } </script>
+  <meta name="keywords"
+        content="Ethos Login Form Responsive Templates, Iphone Widget Template, Smartphone login forms,Login form, Widget Template, Responsive Templates, a Ipad 404 Templates, Flat Responsive Templates"/>
+  <link href="../static/css/login.css" rel='stylesheet' type='text/css'/>
+  <!--webfonts-->
+  <link href='//fonts.googleapis.com/css?family=Nixie+One' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <!--//webfonts-->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div class="main">
+  <div class="login">
+    <h1>地铁仿真系统</h1>
+    <div class="inset">
+      <!--start-main-->
+      <form>
+        <div>
+          <h2>登录</h2>
+          <span><label>用户名</label></span>
+          <span><input type="text" class="textbox" id="username"></span>
+        </div>
+        <div>
+          <span><label>密码</label></span>
+          <span><input type="password" class="password" id="password"></span>
+        </div>
+        <div class="sign">
+          <div class="submit" onclick="login()">
+            <img src="../static/images/arrow.png"/>
+          </div>
+        </div>
+        <div id="error">
+          <label>用户名或密码错误</label>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--//end-main-->
+</div>
+<!--start-copyright-->
+<div class="copy-right">
+  <p>&copy; 2018. All Rights Reserved | Design by <a
+      href="http://www.hnydtech.com/" target="_blank">hnyd</a></p>
+
+</div>
+<!--//end-copyright-->
+</body>
+<script>
+
+  document.onkeyup = function (e) {
+    // 兼容FF和IE和Opera
+    let event = e || window.event;
+    let key = event.which || event.keyCode || event.charCode;
+    if (key === 13) {
+      login();
+    }
+  };
+
+  function login() {
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+    let identity = {
+      username: username,
+      data: new Date()
+    };
+
+    axios.post('/login', {
+      username: username,
+      password: password
+    }).then(function (response) {
+      console.log('--> login success', response);
+      window.location.href = '/main';
+    }).catch(function (error) {
+      console.log('--> login failed:', error)
+    });
+
+    // if (username === 'admin' && password === 'admin') {
+    //   window.localStorage.setItem('identity', JSON.stringify(loginForm));
+    //
+    // } else {
+    //   let error = document.getElementById('error');
+    //   error.style.visibility = 'visible';
+    // }
+  }
+
+</script>
+</html>

@@ -9,11 +9,3 @@ import initStation from 'initStation'
 // 初始化站场
 initStation(graphContext);
 
-/*
-axios测试
- */
-// axios.get('/http').then(function (response) {
-//   console.log('response: ', response);
-// }).catch(function (error) {
-//   console.log('error: ', error);
-// });
