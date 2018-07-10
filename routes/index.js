@@ -5,39 +5,45 @@ let initDate = require('../src/service/link/initDate');
 /* GET home page. */
 module.exports = function (app) {
 
-  app.get('/main', function (req, res, next) {
-    res.render('index', {title: 'index'});
-  });
-
-  app.get('/linkData', function (req, res, next) {
+  app.get('/linkData', function (reqest, response, next) {
     initDate(data => {
-      res.send(data);
+      response.send(data);
     })
   });
 
-  app.get('/', function (req, res, next) {
-    if (req.session && req.session.user) {
-      res.render('index');
+  app.get('/', function (reqest, response, next) {
+    if (reqest.cookies && reqest.cookies.user) {
+      response.render('index');
     } else {
       // 跳转至登录页面
-      res.render('login');
+      response.render('login');
     }
   });
 
-  app.post('/login', function (req, res) {
+  app.get('/login', function (reqest, response, next) {
+    if (reqest.cookies && reqest.cookies.user) {
+      response.render('index');
+    } else {
+      // 跳转至登录页面
+      response.render('login');
+    }
+  });
 
-    let loginForm = req.body;
+  app.post('/login', function (reqest, response) {
+
+    let loginForm = reqest.body;
     console.log('--> body:', loginForm);
     if (loginForm == null || loginForm.username == null || loginForm.password == null) {
-      res.status(400);
-      res.send('bad request!');
+      response.status(400);
+      response.send('bad request!');
     } else {
       if (loginForm.username === 'admin' && loginForm.password === 'admin') {
-        res.cookie('user', loginForm.username, { expires: new Date(Date.now() + 10 * 60 * 1000), httpOnly: true });
-        res.send('ok!');
+        response.cookie('user', loginForm.username,
+                        {expires: new Date(Date.now() + 10 * 60 * 1000), httpOnly: true});
+        response.send('ok!');
       } else {
-        res.status(401);
-        res.send('unauthorized!');
+        response.status(401);
+        response.send('unauthorized!');
       }
     }
 
