@@ -5,14 +5,14 @@ let initDate = require('../src/service/link/initDate');
 /* GET home page. */
 module.exports = function (app) {
 
-  app.get('/linkData', function (reqest, response, next) {
+  app.get('/linkData', function (request, response, next) {
     initDate(data => {
       response.send(data);
     })
   });
 
-  app.get('/', function (reqest, response, next) {
-    if (reqest.cookies && reqest.cookies.user) {
+  app.get('/', function (request, response, next) {
+    if (request.cookies && request.cookies.user) {
       response.render('index');
     } else {
       // 跳转至登录页面
@@ -20,8 +20,8 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/login', function (reqest, response, next) {
-    if (reqest.cookies && reqest.cookies.user) {
+  app.get('/login', function (request, response, next) {
+    if (request.cookies && request.cookies.user) {
       response.render('index');
     } else {
       // 跳转至登录页面
@@ -29,9 +29,8 @@ module.exports = function (app) {
     }
   });
 
-  app.post('/login', function (reqest, response) {
-
-    let loginForm = reqest.body;
+  app.post('/login', function (request, response) {
+    let loginForm = request.body;
     console.log('--> body:', loginForm);
     if (loginForm == null || loginForm.username == null || loginForm.password == null) {
       response.status(400);
@@ -46,7 +45,17 @@ module.exports = function (app) {
         response.send('unauthorized!');
       }
     }
+  });
 
+  app.get('/logout', function (request, response) {
+    if (request.cookies && request.cookies.user) {
+      response.cookie('user', request.cookies.user,
+                      {expires: new Date(Date.now()), httpOnly: true});
+      response.render('login');
+    } else {
+      // 跳转至登录页面
+      response.render('login');
+    }
   })
 
 };

@@ -24,7 +24,8 @@ module.exports = {
       netService: path.join(srcPath, 'network/netService.js'),
       initStation: path.join(srcPath, 'station/init/index.js'),
       stationUtil: path.join(srcPath, 'util/stationUtil.js'),
-      sysUtil: path.join(srcPath, 'util/sysUtil.js')
+      sysUtil: path.join(srcPath, 'util/sysUtil.js'),
+      user: path.join(srcPath, 'user/user.js')
     }
   },
   module: {

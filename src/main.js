@@ -5,7 +5,9 @@
 import * as graphContext from 'stationUtil'
 import {axios} from 'sysUtil'
 import initStation from 'initStation'
+import {userInit} from "./user/user";
 
-// 初始化站场
+// 站场初始化
 initStation(graphContext);
-
+// 用户模块初始化
+userInit();
