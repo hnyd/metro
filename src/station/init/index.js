@@ -12,16 +12,17 @@ import {system} from "../../util/sysUtil";
 
 import {fabric} from 'fabric'
 
-let parser = xmlParser.Parser({explicitArray: false, ignoreAttrs: true});
 let cvs;
 let fc;
 let fcLineList = {};
 let elementData,
     lineData,
     stationData = {}, // 车站
+    switchData = {}, // 道岔
     psdData = {}, // 屏蔽门
     platformData = {},  // 站台
-    fcLineIdTexts = []; // 线路id文本fc对象数组
+    fcLineIdTexts = [], // 线路id文本fc对象数组
+    fcSwitchTexts = []; // 道岔文本fc对象数组
 let context = {
   lineId: true,
   switchId: false
@@ -33,6 +34,8 @@ let context = {
  */
 let initStation = function (graphContext) {
 
+  let startTime = new Date().getTime();
+
   // 阻止浏览器右键菜单！
   document.oncontextmenu = function (event) {
     event.preventDefault();
@@ -43,11 +46,18 @@ let initStation = function (graphContext) {
     lineData = value.lineData;
     elementData = value.elementData;
 
+    console.log('--> fetch data in ', new Date().getTime() - startTime, 'ms');
+
     // 初始化物理数据
     formateData(graphContext);
 
+    console.log('--> formate data in ', new Date().getTime() - startTime, 'ms');
+
     // 绘制站场
     // canvasPaintStation();
+
+    // 加载完毕，隐藏loding
+    document.getElementById('loading').style.visibility = 'hidden';
 
     paint();
 
@@ -72,6 +82,7 @@ function paint() {
   paintStation();
   paintPsd();
   paintPlatform();
+  paintSwitch();
 }
 
 /**
@@ -117,7 +128,7 @@ function initFabric() {
       coorTip.style.textAlign = 'center';
       coorTip.style.position = 'absolute';
       coorTip.style.zIndex = 9998;
-      coorTip.style.background = 'rgba(255, 255, 255, 0.6)';
+      coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
       coorTip.innerText = content;
       document.body.appendChild(coorTip);
     }
@@ -178,7 +189,9 @@ function paintLine() {
             stroke: '#FF1B09'
           }
       );
-      let content = '线路id: ' + linkData[key]['id'];
+      let content = '线路id: ' + linkData[key]['id'] + '\n(' + x1 + ', ' + y1 + ')\n' + '(' + x2
+                    + ', ' + y2 + ')\n' + 'direction:' + linkData[key]['lineDirection'];
+      let posi = '(' + x2 + ', ' + y2 + ')';
       removeCoorDiv(); // 先移除鼠标位置提示div
       let left = event.pageX + 15;
       let top = event.pageY + 15;
@@ -192,11 +205,11 @@ function paintLine() {
         lineTip.id = 'lineTip';
         lineTip.style.left = left + 'px';
         lineTip.style.top = top + 'px';
-        lineTip.style.width = 13 * content.length + 'px';
-        lineTip.style.height = '25px';
+        lineTip.style.width = 10 * posi.length + 'px';
+        lineTip.style.height = '95px';
         lineTip.style.position = 'absolute';
         lineTip.style.zIndex = 9999;
-        lineTip.style.background = 'rgba(255, 255, 255, 0.6)';
+        lineTip.style.background = 'rgba(255, 255, 255, 0.8)';
         lineTip.innerText = content;
         lineTip.style.textAlign = 'center';
         document.body.appendChild(lineTip);
@@ -262,7 +275,7 @@ function paintStation() {
       let y = stationData[key]['OriginY'];
       let line = new fabric.Line([x, y, x + 10, y], {
         strokeWidth: 1,
-        stroke: '#5a5a5a',
+        stroke: '#000000',
         lockMovementX: true,
         lockMovementY: true,
         lockRotation: true,
@@ -346,7 +359,7 @@ function paintPlatform() {
         platformTip.style.height = '25px';
         platformTip.style.position = 'absolute';
         platformTip.style.zIndex = 9999;
-        platformTip.style.background = 'rgba(255, 255, 255, 0.6)';
+        platformTip.style.background = 'rgba(255, 255, 255, 0.8)';
         platformTip.innerText = content;
         platformTip.style.textAlign = 'center';
         document.body.appendChild(platformTip);
@@ -359,6 +372,40 @@ function paintPlatform() {
     });
     fc.add(line);
   }
+}
+
+function paintSwitch() {
+  for (let key in switchData) {
+    if (switchData[key]['Content']) {
+      let content = switchData[key]['Content'];
+      let x = switchData[key]['OriginX'] - 70;
+      let y = switchData[key]['OriginY'] - 40;
+      let line = new fabric.Line([x, y, x + 10, y], {
+        strokeWidth: 1,
+        stroke: '#000000',
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      });
+      fc.add(line);
+      let text = new fabric.Text(content, {
+        left: line.left,
+        top: line.top,
+        fontSize: switchData[key]['FontSize'],
+        fill: '#17ff0a',
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      });
+      fc.add(text);
+      fcSwitchTexts.push(text);
+    }
+  }
+
 }
 
 /**
@@ -446,6 +493,9 @@ function formateStationData() {
           break;
         case 'Platform':  // 站台
           platformData[key] = content;
+          break;
+        case 'Switch':
+          switchData[key] = content;
           break;
       }
     }
