@@ -144,6 +144,7 @@ function initFabric() {
       menu.style.left = left + 'px';
       menu.style.top = top + 'px';
       menu.style.visibility = 'visible';
+      // 线路名
       let lineIdClick = document.getElementById('lineIdClick');
       if (context.lineId) {
         lineIdClick.innerText = '隐藏线路名';
@@ -151,6 +152,15 @@ function initFabric() {
       } else {
         lineIdClick.innerText = '显示线路名';
         lineIdClick.onclick = showLineId;
+      }
+      // 道岔名
+      let switchIdClick = document.getElementById('switchIdClick');
+      if (context.switchId) {
+        switchIdClick.innerText = '隐藏道岔名称'
+        switchIdClick.onclick = hideSwitchId;
+      } else {
+        switchIdClick.innerText = '显示道岔名称'
+        switchIdClick.onclick = showSwitchId;
       }
     } else if (options.button && options.button === 1) {
       menu.style.visibility = 'hidden';
@@ -401,7 +411,7 @@ function paintSwitch() {
         lockScalingX: true,
         lockScalingY: true
       });
-      fc.add(text);
+      // fc.add(text);
       fcSwitchTexts.push(text);
     }
   }
@@ -430,6 +440,30 @@ function hideLineId() {
   }
   fc.renderAll();
   context.lineId = false;
+}
+
+/**
+ * 显示Switch id fc对象
+ */
+function showSwitchId() {
+  document.getElementById('menu').style.visibility = 'hidden';
+  for (let i in fcSwitchTexts) {
+    fc.add(fcSwitchTexts[i]);
+  }
+  fc.renderAll();
+  context.switchId = true;
+}
+
+/**
+ * 隐藏Switch id fc对象
+ */
+function hideSwitchId() {
+  document.getElementById('menu').style.visibility = 'hidden';
+  for (let i in fcSwitchTexts) {
+    fc.remove(fcSwitchTexts[i]);
+  }
+  fc.renderAll();
+  context.switchId = false;
 }
 
 /**
