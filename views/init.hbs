@@ -45,7 +45,8 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="#">按列车运行图运行</a>
           <div class="dropdown-divider"></div>
-          <a id="runTable" class="dropdown-item" href="#">列车运行图</a>
+          <a id="runTable" class="dropdown-item" href="#">列车时刻表</a>
+          <a id="runChart" class="dropdown-item" href="#">列车运行图</a>
         </div>
       </li>
       <li class="nav-item">
@@ -56,28 +57,139 @@
       <button type="button" class="btn btn-primary my-btn" data-toggle="modal" data-target="#commonDialog">开始</button>
       <button type="button" class="btn btn-warning my-btn" data-toggle="modal" data-target="#commonDialog">暂停</button>
       <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-      <h4 class="text-danger">2018.07.11 09:30:28</h4>
+      <h4 id="time" class="text-danger">2018.07.11 09:30:28</h4>
       <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="logout">注销</button>-->
     </div>
   </div>
 </nav>
 
-<!-- 弹窗dialog -->
-<div class="modal fade" id="commonDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+<!-- 运行图dialog -->
+<div id="runChartD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title">列车运行图</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">x</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <div id="dialogBody">
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- 时刻表浏览dialog -->
+<div id="runTableD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">列车时刻表</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="runTableDiv" style="overflow-x: auto;overflow-y: auto;height: 600px">
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">Handle</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Jacob</td>
+              <td>Tony</td>
+              <td>@tony</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -108,6 +220,10 @@
     /*height: 100%;*/
     /*background: #5a5a5a;*/
     background: #000000;
+  }
+
+  #dialogBody {
+    height: 600px;
   }
 
   .my-btn {

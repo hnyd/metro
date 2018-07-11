@@ -4,6 +4,7 @@
  */
 import axios from 'axios'
 import path from 'path'
+import dayjs from 'dayjs'
 
 let rootPath = path.join(__dirname, '../..');
 let srcPath = path.join(rootPath, 'src');
@@ -28,7 +29,13 @@ let service = axios.create(
       withCredentials: true
     });
 
+let timeUtil = function () {
+  $('#time').text(dayjs().format('YYYY.MM.DD  HH:mm'));
+  return dayjs;
+}();
+
 export {
   system,
-  service as axios
+  service as axios,
+  timeUtil
 };
