@@ -4,14 +4,12 @@
 import {axios} from 'sysUtil'
 
 let userInit = function () {
-  let logoutDiv = document.getElementById('logout');
-  logoutDiv.onclick = logout;
+  $('#logout').click(function () {
+    $('#commonDialog').modal();
+  });
 };
 
 function logout() {
-
-  $('#commonDialog').modal();
-
   // axios.get('/logout').then(function (response) {
   //   console.log('--> logout success: ', response);
   //   window.location.href = '/login';

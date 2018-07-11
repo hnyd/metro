@@ -38,7 +38,7 @@ module.exports = function (app) {
     } else {
       if (loginForm.username === 'admin' && loginForm.password === 'admin') {
         response.cookie('user', loginForm.username,
-                        {expires: new Date(Date.now() + 10 * 60 * 1000), httpOnly: true});
+                        {expires: new Date(Date.now() + 20 * 60 * 1000), httpOnly: true});
         response.send('ok!');
       } else {
         response.status(401);

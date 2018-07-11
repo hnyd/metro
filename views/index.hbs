@@ -16,7 +16,24 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">用户<span class="sr-only">(current)</span></a>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          用户
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">用户信息</a>
+          <div class="dropdown-divider"></div>
+          <a id="logout" class="dropdown-item" href="#">退出登录</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          站场运行管理
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">初始化</a>
+          <a class="dropdown-item" href="#">暂停</a>
+          <a class="dropdown-item" href="#">开始</a>
+        </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">站场设备控制</a>
@@ -26,19 +43,21 @@
           列车控制
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a id="runTable" class="dropdown-item" href="#">列车时刻表</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">按列车时刻表运行</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a id="runTable" class="dropdown-item" href="#">列车时刻表</a>
         </div>
+      </li>
+      <li class="nav-item">
+        <a id="errorMsg" class="nav-link" href="#">故障信息</a>
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#commonDialog">
-        Launch demo modal
-      </button>
+      <button type="button" class="btn btn-primary my-btn" data-toggle="modal" data-target="#commonDialog">开始</button>
+      <button type="button" class="btn btn-warning my-btn" data-toggle="modal" data-target="#commonDialog">暂停</button>
       <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="logout">注销</button>
+      <h4 class="text-danger">2018.07.11 09:30:28</h4>
+      <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="logout">注销</button>-->
     </div>
   </div>
 </nav>
@@ -88,6 +107,10 @@
     /*height: 100%;*/
     /*background: #5a5a5a;*/
     background: #000000;
+  }
+
+  .my-btn {
+    margin-right: 20px;
   }
 
   #canvas {
