@@ -3,6 +3,8 @@
  */
 // import echarts from '../../../static/js/echarts.common.min'
 
+import {getFc, fabric} from "../../util/stationUtil";
+
 let option = {
   tooltip: {
     trigger: 'axis'
@@ -41,8 +43,6 @@ let option = {
       type: 'line'
     }]
 };
-let aniInterval;
-
 
 let li = function () {
   // TODO
@@ -80,20 +80,6 @@ function lineInit() {
           keyboard: false
         });
   });
-  $('#startRun').click(startRunTest);
-  $('#stopRun').click(stopRunTest);
-}
-
-function startRunTest() {
-  aniInterval = window.setInterval(animation, 1000);
-}
-
-function stopRunTest() {
-  window.clearInterval(aniInterval);
-}
-
-function animation() {
-
 }
 
 function tableInit() {

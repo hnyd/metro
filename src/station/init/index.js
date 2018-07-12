@@ -187,9 +187,9 @@ function paintLine() {
   for (let key in linkData) {
     let pointList = linkData[key]['pointList'];
     let x1 = pointList[0]['X'];
-    let y1 = pointList[0]['Y'] - 500;
+    let y1 = pointList[0]['Y'];
     let x2 = pointList[1]['X'];
-    let y2 = pointList[1]['Y'] - 500;
+    let y2 = pointList[1]['Y'];
     let line = new fabric.Line([x1, y1, x2, y2], option);
     fcLineList[linkData[key]['id']] = line;
 
@@ -272,6 +272,7 @@ function paintLine() {
     fc.add(fcLineIdText);
     fcLineIdTexts.push(fcLineIdText);
   }
+  link.setFcLineMap(fcLineList);
 }
 
 /**
@@ -472,7 +473,7 @@ function hideSwitchId() {
 function fetchATSData() {
   return new Promise((resolve, reject) => {
     axios.get('/linkData').then(function (response) {
-      console.log('--> response: ', response);
+      // console.log('--> response: ', response);
       resolve(response.data);
     }).catch(function (error) {
       console.log('--> fetchATSData error: ', error);
@@ -492,6 +493,8 @@ function formateLineData(graphContext) {
   let minY = 1000;
   for (let key in lineData) {
     let value = lineData[key];
+    value['pointList'][0]['Y'] = value['pointList'][0]['Y'] - 500;
+    value['pointList'][1]['Y'] = value['pointList'][1]['Y'] - 500;
     for (let k in value) {
       let code = k.charAt(0);
       if (code === code.toUpperCase()) {

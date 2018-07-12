@@ -50,4 +50,4 @@ let colorTrans = function (colorString) {
   }
 };
 
-export {initCVS, cvs, getFc, colorTrans}
+export {initCVS, cvs, getFc, fabric, colorTrans}

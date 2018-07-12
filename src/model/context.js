@@ -3,6 +3,7 @@
  */
 
 let dialogType;
+let running = false;
 
 let context = {
 
@@ -12,6 +13,14 @@ let context = {
 
   getDialogType: function () {
     return dialogType;
+  },
+
+  setRunning: function (status) {
+    running = status;
+  },
+
+  getRunning: function () {
+    return running;
   }
 
 };
