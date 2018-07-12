@@ -6,7 +6,7 @@
 import path from 'path'
 import xmlParser from 'xml2js'
 import {axios} from 'sysUtil'
-import {colorTrans} from "stationUtil"
+import {colorTrans, getFc} from "stationUtil"
 import link from '../../model/link.js'
 import {system} from "../../util/sysUtil";
 
@@ -89,7 +89,7 @@ function paint() {
  * 初始化fabric绘图工具
  */
 function initFabric() {
-  fc = new fabric.Canvas('canvas');
+  fc = getFc();
 
   // fc.on('mouse:move', function (options) {
   //   console.log('--> options: ', options);
@@ -106,33 +106,33 @@ function initFabric() {
   fc.selection = false; // 画布取消应用组选择
 
   // 监听鼠标坐标位置
-  fc.on('mouse:move', function () {
-    if (document.getElementById('menu').style.visibility === 'visible') {
-      return; // 右键菜单显示时，不出现tip
-    }
-    let left = event.pageX + 15;
-    let top = event.pageY + 15;
-    let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
-    if (document.getElementById('coorTip')) {
-      let coorTip = document.getElementById('coorTip');
-      coorTip.style.left = left + 'px';
-      coorTip.style.top = top + 'px';
-      coorTip.innerText = content;
-    } else {
-      let coorTip = document.createElement('div');
-      coorTip.id = 'coorTip';
-      coorTip.style.left = left + 'px';
-      coorTip.style.top = top + 'px';
-      coorTip.style.width = 10 * content.length + 'px';
-      coorTip.style.height = '25px';
-      coorTip.style.textAlign = 'center';
-      coorTip.style.position = 'absolute';
-      coorTip.style.zIndex = 9998;
-      coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
-      coorTip.innerText = content;
-      document.body.appendChild(coorTip);
-    }
-  });
+  // fc.on('mouse:move', function () {
+  //   if (document.getElementById('menu').style.visibility === 'visible') {
+  //     return; // 右键菜单显示时，不出现tip
+  //   }
+  //   let left = event.pageX + 15;
+  //   let top = event.pageY + 15;
+  //   let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
+  //   if (document.getElementById('coorTip')) {
+  //     let coorTip = document.getElementById('coorTip');
+  //     coorTip.style.left = left + 'px';
+  //     coorTip.style.top = top + 'px';
+  //     coorTip.innerText = content;
+  //   } else {
+  //     let coorTip = document.createElement('div');
+  //     coorTip.id = 'coorTip';
+  //     coorTip.style.left = left + 'px';
+  //     coorTip.style.top = top + 'px';
+  //     coorTip.style.width = 10 * content.length + 'px';
+  //     coorTip.style.height = '25px';
+  //     coorTip.style.textAlign = 'center';
+  //     coorTip.style.position = 'absolute';
+  //     coorTip.style.zIndex = 9998;
+  //     coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
+  //     coorTip.innerText = content;
+  //     document.body.appendChild(coorTip);
+  //   }
+  // });
 
   // 监听鼠标右键
   fc.on('mouse:down', function (options) {

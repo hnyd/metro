@@ -3,6 +3,8 @@
 <head>
   <title>{{title}}</title>
   <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-theme-balham.css">
 </head>
 <body>
 
@@ -54,8 +56,8 @@
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <button type="button" class="btn btn-primary my-btn" data-toggle="modal" data-target="#commonDialog">开始</button>
-      <button type="button" class="btn btn-warning my-btn" data-toggle="modal" data-target="#commonDialog">暂停</button>
+      <button id="startRun" type="button" class="btn btn-primary my-btn" data-toggle="modal" data-target="#commonDialog">开始</button>
+      <button id="stopRun" type="button" class="btn btn-warning my-btn" data-toggle="modal" data-target="#commonDialog">暂停</button>
       <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
       <h4 id="time" class="text-danger">2018.07.11 09:30:28</h4>
       <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="logout">注销</button>-->
@@ -70,7 +72,7 @@
       <div class="modal-header">
         <h5 class="modal-title">列车运行图</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">x</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
@@ -88,108 +90,178 @@
       <div class="modal-header">
         <h5 class="modal-title">列车时刻表</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">x</span>
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div id="runTableDiv" style="overflow-x: auto;overflow-y: auto;height: 600px">
-          <table class="table table-bordered">
-            <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>Tony</td>
-              <td>@tony</td>
-            </tr>
-            </tbody>
-          </table>
+        <div class="dropdown">
+          <button style="margin-bottom: 10px" class="btn btn-primary dropdown-toggle  btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            添加列车
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a id="copyLineBT" class="dropdown-item" href="#">从已有列车复制</a>
+            <a id="addLineBT" class="dropdown-item" href="#">新增</a>
+          </div>
         </div>
+        <div id="runTableDiv" style="width: 100%;height: 600px" class="ag-theme-balham">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 时刻表添加dialog -->
+<div id="addLineD" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">新增列车</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">列车名</span>
+            </div>
+            <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div align="right" style="margin-right: 20px;margin-bottom: 10px">到达时间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发车时间</div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北客站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北苑站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">动物公园站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">行政中心站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">凤城五路站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">市图书馆站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">大明宫西站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">龙首原站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">安远门站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北大街站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">钟楼站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">永宁门站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">南梢门站</span>
+            </div>
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 复制列车dialog -->
+<div id="copyLineD" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">复制列车</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">列车名称</label>
+            <input class="form-control form-control-sm" type="text" style="margin-left: 30px">
+          </div>
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">选择列车</label>
+            <select class="form-control form-control-sm" style="margin-left: 30px">
+              <option>Small select</option>
+              <option>Small select</option>
+              <option>Small select</option>
+              <option>Small select</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">偏移时间</label>
+            <input class="form-control form-control-sm" type="text" style="margin-left: 30px" placeholder="分钟">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">添加</button>
       </div>
     </div>
   </div>
@@ -210,6 +282,7 @@
 <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="../static/js/echarts.common.min.js"></script>
+<script src="https://unpkg.com/ag-grid/dist/ag-grid.min.noStyle.js"></script>
 <script type="text/javascript" src="../static/js/boudle.js"></script></body>
 </html>
 <!--<script type="module" src="/ats/station/init/index.js"></script>-->

@@ -2,10 +2,19 @@
  * 站场模块工具
  * Created by Captain on 2018/5/17 16:39.
  */
+import {fabric} from 'fabric'
 
 // 绘图工具canvas 2d
 let canvas = document.getElementById('canvas');
 let cvs;
+let fc;
+
+let getFc = function () {
+  if (!fc) {
+    fc = new fabric.Canvas('canvas');
+  }
+  return fc;
+};
 
 /**
  * 初始化canvas画布
@@ -41,4 +50,4 @@ let colorTrans = function (colorString) {
   }
 };
 
-export {initCVS, cvs, colorTrans}
+export {initCVS, cvs, getFc, colorTrans}
