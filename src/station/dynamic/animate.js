@@ -45,7 +45,7 @@ function startRunTest() {
         {
           left: fcLineMap[lineIds[0]].left - 40,
           top: fcLineMap[lineIds[0]].top - 22,
-          fill: '#ffffff',
+          fill: '#cc9900',
           width: 40,
           height: 20
         }

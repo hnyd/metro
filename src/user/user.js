@@ -5,17 +5,17 @@ import {axios} from 'sysUtil'
 
 let userInit = function () {
   $('#logout').click(function () {
-    $('#commonDialog').modal();
+    logout();
   });
 };
 
 function logout() {
-  // axios.get('/logout').then(function (response) {
-  //   console.log('--> logout success: ', response);
-  //   window.location.href = '/login';
-  // }).catch(function (error) {
-  //   console.log('--> logout fail:', error)
-  // });
+  axios.get('/logout').then(function (response) {
+    console.log('--> logout success: ', response);
+    window.location.href = '/login';
+  }).catch(function (error) {
+    console.log('--> logout fail:', error)
+  });
 }
 
 export {userInit};
