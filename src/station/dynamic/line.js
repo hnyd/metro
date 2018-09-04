@@ -44,6 +44,61 @@ let option = {
     }]
 };
 
+let lineData = {
+  bk: {
+    arrival: '',
+    begin: ''
+  },
+  by: {
+    arrival: '',
+    begin: ''
+  },
+  dw: {
+    rrival: '',
+    begin: ''
+  },
+  xz: {
+    rrival: '',
+    begin: ''
+  },
+  fc: {
+    rrival: '',
+    begin: ''
+  },
+  st: {
+    rrival: '',
+    begin: ''
+  },
+  dm: {
+    rrival: '',
+    begin: ''
+  },
+  ls: {
+    rrival: '',
+    begin: ''
+  },
+  ay: {
+    rrival: '',
+    begin: ''
+  },
+  bd: {
+    rrival: '',
+    begin: ''
+  },
+  zl: {
+    rrival: '',
+    begin: ''
+  },
+  yn: {
+    rrival: '',
+    begin: ''
+  },
+  ns: {
+    rrival: '',
+    begin: ''
+  }
+};
+
 let li = function () {
   // TODO
 };
@@ -80,6 +135,12 @@ function lineInit() {
           keyboard: false
         });
   });
+  $('#addLineDataBT').click(adddLineData);
+}
+
+function adddLineData() {
+  let tmp = $('#bkArrival').val();
+  console.log('--> bkArrival:', tmp)
 }
 
 function tableInit() {
