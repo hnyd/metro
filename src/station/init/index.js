@@ -9,6 +9,7 @@ import {axios} from 'sysUtil'
 import {colorTrans, getFc} from "stationUtil"
 import link from '../../model/link.js'
 import {system} from "../../util/sysUtil";
+import {upLineOptions, animateLineData} from "../dynamic/animate";
 
 import {fabric} from 'fabric'
 
@@ -27,6 +28,8 @@ let context = {
   lineId: true,
   switchId: false
 };
+let mouseLineIndexId;
+let mouseLineIndexKey;
 
 /**
  * 站场初始化
@@ -34,12 +37,10 @@ let context = {
  */
 let initStation = function (graphContext) {
 
-  let startTime = new Date().getTime();
+  // 鼠标点击事件初始化
+  clickEventInit();
 
-  // 阻止浏览器右键菜单！
-  document.oncontextmenu = function (event) {
-    event.preventDefault();
-  };
+  let startTime = new Date().getTime();
 
   // 初始化站场
   fetchATSData().then(function (value) {
@@ -66,6 +67,67 @@ let initStation = function (graphContext) {
   });
 
 };
+
+/**
+ * 鼠标点击事件初始化
+ */
+function clickEventInit() {
+  // 阻止浏览器右键菜单！
+  document.oncontextmenu = function (event) {
+    event.preventDefault();
+  };
+
+  // 添加模拟列车菜单点击
+  $('#mockTrainClick').click(function () {
+    closeAllMenu();
+    $('#mockTrainD').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        });
+  });
+
+  $('#mockTrainD').on('shown.bs.modal', function () {
+    let linkData = link.getLinkData();
+    let direction = linkData[mouseLineIndexKey]['lineDirection'] === 55 ? '上行' : '下行';
+    $('#mockDialogDirection').text(direction);
+  });
+
+  $('#addMockTrainBT').click(function () {
+    let id = $('#mockLineName').val();
+    if (link.containsId(id)) {
+      alert('列车' + id + '已存在！');
+      return;
+    }
+    let direction;
+    let ids;
+    if (link.getLinkData()[mouseLineIndexKey]['lineDirection'] === 55) {
+      direction = 'up';
+      ids = animateLineData.getUpLineIds();
+    } else {
+      direction = 'down';
+      ids = animateLineData.getDownLineIds();
+    }
+    let trainIndex = -1;
+    ids.forEach(function (element, index, array) {
+      if (mouseLineIndexId === element) {
+        trainIndex = index;
+        return null;
+      }
+    });
+    let train = {
+      id: id,
+      type: 'mock',
+      direction: direction,
+      trainIndex: trainIndex
+    };
+    link.addRunTrain(train);
+    alert('模拟列车添加成功');
+    $('#mockTrainD').modal('hide');
+    console.log(link.getRunTrain());
+  });
+
+}
 
 function formateData(graphContext) {
   // 初始化线路
@@ -138,6 +200,7 @@ function initFabric() {
   fc.on('mouse:down', function (options) {
     let menu = document.getElementById('menu');
     if (options.button && options.button === 3) {
+      closeAllMenu();
       removeCoorDiv(); // 先移除鼠标位置提示框
       let left = event.pageX + 15;
       let top = event.pageY + 15;
@@ -163,7 +226,8 @@ function initFabric() {
         switchIdClick.onclick = showSwitchId;
       }
     } else if (options.button && options.button === 1) {
-      menu.style.visibility = 'hidden';
+      closeAllMenu();
+      // menu.style.visibility = 'hidden';
     }
   });
 
@@ -224,7 +288,7 @@ function paintLine() {
         lineTip.style.textAlign = 'center';
         document.body.appendChild(lineTip);
       }
-      fc.renderAll();
+      // fc.renderAll();
     });
     line.on('mouseout', function () {
       fcLineList[linkData[key]['id']].set(
@@ -235,7 +299,26 @@ function paintLine() {
       if (document.getElementById('lineTip')) {
         document.body.removeChild(document.getElementById('lineTip'));
       }
-      fc.renderAll();
+      // fc.renderAll();
+    });
+    line.on('mousedown', function (options) {
+      // 记录鼠标点击事件发生时 所处的line id
+      let id = linkData[key]['id'];
+      console.log('LineId: ', id);
+      mouseLineIndexId = id;
+      mouseLineIndexKey = key;
+
+      document.getElementById('menu').style.visibility = 'hidden';
+      let menu = document.getElementById('lineMenu');
+      if (options.button && options.button === 3) {
+        let left = event.pageX + 15;
+        let top = event.pageY + 15;
+        menu.style.left = left + 'px';
+        menu.style.top = top + 'px';
+        menu.style.visibility = 'visible';
+      } else if (options.button && options.button === 1) {
+        menu.style.visibility = 'hidden';
+      }
     });
 
     fc.add(line);
@@ -258,17 +341,17 @@ function paintLine() {
       lockScalingY: true
     }));
     let fcLineIdText = new fabric.Text(linkData[key]['id'] + '',
-        {
-          left: x1,
-          top: y1 + 6,
-          fontSize: 15,
-          fill: '#ffffff',
-          lockMovementX: true,
-          lockMovementY: true,
-          lockRotation: true,
-          lockScalingX: true,
-          lockScalingY: true
-        });
+                                       {
+                                         left: x1,
+                                         top: y1 + 6,
+                                         fontSize: 15,
+                                         fill: '#ffffff',
+                                         lockMovementX: true,
+                                         lockMovementY: true,
+                                         lockRotation: true,
+                                         lockScalingX: true,
+                                         lockScalingY: true
+                                       });
     fc.add(fcLineIdText);
     fcLineIdTexts.push(fcLineIdText);
   }
@@ -427,7 +510,7 @@ function showLineId() {
   for (let i in fcLineIdTexts) {
     fc.add(fcLineIdTexts[i]);
   }
-  fc.renderAll();
+  // fc.renderAll();
   context.lineId = true;
 }
 
@@ -439,7 +522,7 @@ function hideLineId() {
   for (let i in fcLineIdTexts) {
     fc.remove(fcLineIdTexts[i]);
   }
-  fc.renderAll();
+  // fc.renderAll();
   context.lineId = false;
 }
 
@@ -451,7 +534,7 @@ function showSwitchId() {
   for (let i in fcSwitchTexts) {
     fc.add(fcSwitchTexts[i]);
   }
-  fc.renderAll();
+  // fc.renderAll();
   context.switchId = true;
 }
 
@@ -463,7 +546,7 @@ function hideSwitchId() {
   for (let i in fcSwitchTexts) {
     fc.remove(fcSwitchTexts[i]);
   }
-  fc.renderAll();
+  // fc.renderAll();
   context.switchId = false;
 }
 
@@ -545,6 +628,18 @@ function formateStationData() {
 function removeCoorDiv() {
   if (document.getElementById('coorTip')) {
     document.body.removeChild(document.getElementById('coorTip'));
+  }
+}
+
+/**
+ * 关闭所有菜单
+ */
+function closeAllMenu() {
+  if (document.getElementById('lineMenu')) {
+    document.getElementById('lineMenu').style.visibility = 'hidden';
+  }
+  if (document.getElementById('menu')) {
+    document.getElementById('menu').style.visibility = 'hidden';
   }
 }
 

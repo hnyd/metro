@@ -4,10 +4,11 @@
  * Created by Captain on 2018/5/24 14:45.
  */
 
-
-let linkData;
+let linkData; // element data
 let linkMap = {};
-let fcLineMap = {};
+let fcLineMap = {}; // fc 列车 object映射map
+let runTrainList = []; // 运行列车modal
+let runTrainFcMap = {}; // 运行列车实体绘制对象映射map
 
 let link = {
 
@@ -33,7 +34,35 @@ let link = {
 
   getFcLineMap: function () {
     return fcLineMap;
+  },
+
+  addRunTrain: function (train) {
+    runTrainList.push(train);
+  },
+
+  getRunTrain: function () {
+    return runTrainList;
+  },
+
+  containsId: function (id) {
+    let result = false;
+    runTrainList.forEach(function (element, index, array) {
+      if (element['id'] === id) {
+        result = true;
+        return result;
+      }
+    });
+    return result;
+  },
+
+  addRunTrainFc: function (id, trainFc) {
+    runTrainFcMap[id] = trainFc;
+  },
+
+  getRunFcMap: function () {
+    return runTrainFcMap;
   }
+
 };
 
 export default link;

@@ -2,7 +2,9 @@
 <html>
 <head>
   <title>{{title}}</title>
-  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-grid.css">
   <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-theme-balham.css">
 </head>
@@ -12,13 +14,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <!--<a class="navbar-brand" href="#">Navbar</a>-->
   <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
-    <!--<span class="navbar-toggler-icon"></span>-->
+  <!--<span class="navbar-toggler-icon"></span>-->
   <!--</button>-->
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           用户
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -28,7 +31,8 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           站场运行管理
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -41,7 +45,8 @@
         <a class="nav-link" href="#">站场设备控制</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           列车控制
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,18 +61,21 @@
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <button id="startRun" type="button" class="btn btn-primary my-btn" data-toggle="modal" data-target="#commonDialog">开始</button>
-      <button id="stopRun" type="button" class="btn btn-warning my-btn" data-toggle="modal" data-target="#commonDialog">暂停</button>
-      <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
+      <button id="startRun" type="button" class="btn btn-primary my-btn" data-toggle="modal"
+              data-target="#commonDialog">开始
+      </button>
+      <button id="stopRun" type="button" class="btn btn-warning my-btn" data-toggle="modal"
+              data-target="#commonDialog">暂停
+      </button>
       <h4 id="time" class="text-danger">2018.07.11 09:30:28</h4>
-      <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="logout">注销</button>-->
     </div>
   </div>
 </nav>
 
 <!-- 运行图dialog -->
-<div id="runChartD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div id="runChartD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="width: 1200px;">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">列车运行图</h5>
@@ -75,7 +83,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div>
         <div id="dialogBody">
         </div>
       </div>
@@ -84,7 +92,8 @@
 </div>
 
 <!-- 时刻表浏览dialog -->
-<div id="runTableD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div id="runTableD" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -95,12 +104,15 @@
       </div>
       <div class="modal-body">
         <div class="dropdown">
-          <button style="margin-bottom: 10px" class="btn btn-primary dropdown-toggle  btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button style="margin-bottom: 10px" class="btn btn-primary dropdown-toggle  btn-sm"
+                  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
             添加列车
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a id="copyLineBT" class="dropdown-item" href="#">从已有列车复制</a>
-            <a id="addLineBT" class="dropdown-item" href="#">新增</a>
+            <a id="addUpLineBT" class="dropdown-item" href="#">新增上行列车</a>
+            <a id="addDownLineBT" class="dropdown-item" href="#">新增下行列车</a>
           </div>
         </div>
         <div id="runTableDiv" style="width: 100%;height: 600px" class="ag-theme-balham">
@@ -110,12 +122,13 @@
   </div>
 </div>
 
-<!-- 时刻表添加dialog -->
-<div id="addLineD" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<!-- 上行时刻表添加dialog -->
+<div id="addUpLineD" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">新增列车</h5>
+        <h5 class="modal-title">新增上行列车</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -126,111 +139,286 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="inputGroup-sizing-sm">列车名</span>
             </div>
-            <input id="addLineName" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="addLineNameUp" type="text" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div align="right" style="margin-right: 20px;margin-bottom: 10px">到达时间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发车时间</div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">北客站</span>
             </div>
-            <input id="bkArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="bkBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="bkArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="bkBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">北苑站</span>
             </div>
-            <input id="byArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="byBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="byArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="byBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">动物公园站</span>
             </div>
-            <input id="dwArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="dwBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="dwArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="dwBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">行政中心站</span>
             </div>
-            <input id="xzArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="xzBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="xzArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="xzBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">凤城五路站</span>
             </div>
-            <input id="fcArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="fcBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="fcArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="fcBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">市图书馆站</span>
             </div>
-            <input id="stArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="stBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="stArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="stBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">大明宫西站</span>
             </div>
-            <input id="dmArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="dmBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="dmArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="dmBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">龙首原站</span>
             </div>
-            <input id="lsArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="lsBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="lsArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="lsBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">安远门站</span>
             </div>
-            <input id="ayArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="ayBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="ayArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="ayBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">北大街站</span>
             </div>
-            <input id="bdArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="bdBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="bdArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="bdBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">钟楼站</span>
             </div>
-            <input id="zlArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="zlBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="zlArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="zlBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">永宁门站</span>
             </div>
-            <input id="ynArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="ynBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="ynArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="ynBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="">南梢门站</span>
             </div>
-            <input id="nsArrival" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-            <input id="nsBegin" type="time" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            <input id="nsArrivalUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="nsBeginUp" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="addLineDataBT" type="button" class="btn btn-primary">添加</button>
+        <button id="addUpLineDataBT" type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 下行时刻表添加dialog -->
+<div id="addDownLineD" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">新增下行列车</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">列车名</span>
+            </div>
+            <input id="addLineNameDown" type="text" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div align="right" style="margin-right: 20px;margin-bottom: 10px">到达时间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发车时间</div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">南梢门站</span>
+            </div>
+            <input id="nsArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="nsBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">永宁门站</span>
+            </div>
+            <input id="ynArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="ynBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">钟楼站</span>
+            </div>
+            <input id="zlArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="zlBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北大街站</span>
+            </div>
+            <input id="bdArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="bdBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">安远门站</span>
+            </div>
+            <input id="ayArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="ayBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">龙首原站</span>
+            </div>
+            <input id="lsArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="lsBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">大明宫西站</span>
+            </div>
+            <input id="dmArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="dmBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">市图书馆站</span>
+            </div>
+            <input id="stArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="stBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">凤城五路站</span>
+            </div>
+            <input id="fcArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="fcBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">行政中心站</span>
+            </div>
+            <input id="xzArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="xzBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">动物公园站</span>
+            </div>
+            <input id="dwArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="dwBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北苑站</span>
+            </div>
+            <input id="byArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="byBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">北客站</span>
+            </div>
+            <input id="bkArrivalDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+            <input id="bkBeginDown" type="time" class="form-control" aria-label="Small"
+                   aria-describedby="inputGroup-sizing-sm">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="addDownLineDataBT" type="button" class="btn btn-primary">添加</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- 复制列车dialog -->
-<div id="copyLineD" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="copyLineD" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
+     aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -243,25 +431,52 @@
         <form class="form-inline">
           <div class="form-group">
             <label for="staticEmail" class="col-form-label">列车名称</label>
-            <input class="form-control form-control-sm" type="text" style="margin-left: 30px">
+            <input id="newLineName" class="form-control form-control-sm" type="text" style="margin-left: 30px">
           </div>
           <div class="form-group">
             <label for="staticEmail" class="col-form-label">选择列车</label>
-            <select class="form-control form-control-sm" style="margin-left: 30px">
-              <option>Small select</option>
-              <option>Small select</option>
-              <option>Small select</option>
-              <option>Small select</option>
+            <select id="lineCopySelect" class="form-control form-control-sm" style="margin-left: 30px">
             </select>
           </div>
           <div class="form-group">
             <label for="staticEmail" class="col-form-label">偏移时间</label>
-            <input class="form-control form-control-sm" type="text" style="margin-left: 30px" placeholder="分钟">
+            <input id="interval" class="form-control form-control-sm" type="text" style="margin-left: 30px"
+                   placeholder="分钟">
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">添加</button>
+        <button id="addCopyLineBT" type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新建模拟列车Dialog -->
+<div id="mockTrainD" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">新建模拟列车</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">列车名称</label>
+            <input id="mockLineName" class="form-control form-control-sm" type="text" style="margin-left: 30px">
+          </div>
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">列车方向：</label>
+            <p id="mockDialogDirection"></p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="addMockTrainBT" type="button" class="btn btn-primary">添加</button>
       </div>
     </div>
   </div>
@@ -270,17 +485,29 @@
 <!-- canvas画布 -->
 <canvas id="canvas"></canvas>
 
+<!-- 画布右键菜单 -->
 <div id="menu">
   <p id="lineIdClick">隐藏线路名</p>
   <p id="switchIdClick">显示道岔名</p>
 </div>
+
+<div id="lineMenu">
+  <p id="mockTrainClick">在此新建模拟列车</p>
+</div>
+
 <div id="loading">
   <p>加载中...</p>
 </div>
 
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 <script src="../static/js/echarts.common.min.js"></script>
 <script src="https://unpkg.com/ag-grid/dist/ag-grid.min.noStyle.js"></script>
 </body>
@@ -297,6 +524,9 @@
 
   #dialogBody {
     height: 600px;
+    /*width: 1200px;*/
+    /*overflow: hidden;*/
+    /*overflow-x: scroll;*/
   }
 
   .my-btn {
@@ -337,6 +567,28 @@
     margin-bottom: 5px;
     text-align: center;
     font-size: 14px;
+  }
+
+  #lineMenu {
+    background: rgb(255, 255, 255);
+    width: 170px;
+    position: absolute;
+    z-index: 9999;
+    visibility: hidden;
+  }
+
+  #lineMenu p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  #mockDialogDirection {
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
   }
 
 </style>

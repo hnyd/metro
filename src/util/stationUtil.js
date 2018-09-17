@@ -50,4 +50,16 @@ let colorTrans = function (colorString) {
   }
 };
 
-export {initCVS, cvs, getFc, fabric, colorTrans}
+let stationLineIds = [13, 39, 24, 51, 55, 69, 58, 72, 62, 77, 84, 98, 88, 103, 126, 136, 129, 139,
+                      170, 180, 174, 185, 204, 217, 207, 220];
+let isStationLine = function (id) {
+  let boo = false;
+  stationLineIds.forEach(function (element, index, array) {
+    if (element === id) {
+      boo = true;
+    }
+  });
+  return boo;
+};
+
+export {initCVS, cvs, getFc, fabric, colorTrans, isStationLine}
