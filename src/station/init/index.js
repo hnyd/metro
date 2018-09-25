@@ -30,6 +30,7 @@ let context = {
 };
 let mouseLineIndexId;
 let mouseLineIndexKey;
+let gridOptions;
 
 /**
  * 站场初始化
@@ -87,10 +88,53 @@ function clickEventInit() {
         });
   });
 
+  $('#trainDialog').click(function () {
+    $('#trainInfoD').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        }
+    );
+  });
+
+  $('#trainInfoD').on('shown.bs.modal', function () {
+    let trainList = link.getRunTrain();
+    if (!gridOptions) {
+      gridOptions = {
+        suppressMovableColumns: true,
+      };
+    }
+    let columnDefs = [
+      {headerName: "列车\\信息", field: "line", width: 150},
+      {headerName: "运行方向", field: "direction", width: 150},
+      {headerName: "列车类型", field: "type", width: 150},
+      {headerName: "状态", field: "status", width: 300}
+    ];
+    let rowData = [];
+    trainList.forEach(function (element, index, array) {
+      let tmp = {};
+      tmp['line'] = element['id'];
+      tmp['direction'] = element['direction'] === 'up' ? '上行' : '下行';
+      tmp['type'] = element['type'] === 'mock' ? '模拟' : '实体';
+      tmp['status'] = '正常';
+      rowData.push(tmp);
+    });
+    if (gridOptions.hasOwnProperty('rowData')) {
+      gridOptions.api.setRowData([]);
+      gridOptions.api.updateRowData({add: rowData});
+      return;
+    }
+    gridOptions['columnDefs'] = columnDefs;
+    gridOptions['rowData'] = rowData;
+    let eGridDiv = document.querySelector('#trainInfo');
+    new agGrid.Grid(eGridDiv, gridOptions);
+  });
+
   $('#mockTrainD').on('shown.bs.modal', function () {
     let linkData = link.getLinkData();
     let direction = linkData[mouseLineIndexKey]['lineDirection'] === 55 ? '上行' : '下行';
     $('#mockDialogDirection').text(direction);
+
   });
 
   $('#addMockTrainBT').click(function () {
@@ -124,7 +168,7 @@ function clickEventInit() {
     link.addRunTrain(train);
     alert('模拟列车添加成功');
     $('#mockTrainD').modal('hide');
-    console.log(link.getRunTrain());
+    console.log('run link list: ', link.getRunTrain());
   });
 
 }

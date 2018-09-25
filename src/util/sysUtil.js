@@ -5,6 +5,7 @@
 import axios from 'axios'
 import path from 'path'
 import dayjs from 'dayjs'
+// import mysql from 'mysql'
 
 let rootPath = path.join(__dirname, '../..');
 let srcPath = path.join(rootPath, 'src');
@@ -34,8 +35,18 @@ let timeUtil = function () {
   return dayjs;
 }();
 
+// let connection = mysql.createConnection(
+//     {
+//       host: '111.231.61.80',
+//       user: 'root',
+//       password: 'abcd1234',
+//       database: 'metro'
+//     });
+// connection.connect();
+
 export {
   system,
   service as axios,
   timeUtil
+  // connection
 };

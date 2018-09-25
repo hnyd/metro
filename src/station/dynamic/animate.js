@@ -94,7 +94,9 @@ function trainAnimation() {
     let direction = trainData['direction'];
     let lineIds = direction === 'up' ? upLineIds : downLineIds;
     let runFcMap = link.getRunFcMap();
+    let runIdFcMap = link.getRunTrainIdFcMap();
     let trainEntity;
+    let idEntity;
     if (runFcMap.hasOwnProperty(trainData['id'])) {
       trainEntity = runFcMap[trainData['id']];
     } else {
@@ -109,6 +111,24 @@ function trainAnimation() {
       );
       fc.add(trainEntity);
       link.addRunTrainFc(trainData['id'], trainEntity);
+    }
+    if (runIdFcMap.hasOwnProperty(trainData['id'])) {
+      idEntity = runIdFcMap[trainData['id']];
+    } else {
+      idEntity = new fabric.Text(trainData['id'] + '',
+                                 {
+                                   left: trainEntity.left,
+                                   top: trainEntity.top - 15,
+                                   fontSize: 15,
+                                   fill: '#ffffff',
+                                   lockMovementX: true,
+                                   lockMovementY: true,
+                                   lockRotation: true,
+                                   lockScalingX: true,
+                                   lockScalingY: true
+                                 });
+      fc.add(idEntity);
+      link.addRunTrainIdFc(trainData['id'], idEntity);
     }
 
     // --- animation controller begin ---
@@ -168,13 +188,53 @@ function trainAnimation() {
       }
     }
     let interval = direction === 'up' ? 20 : -20;
+
+    // 移动所有的entity
     trainEntity.set(
         {
           left: trainEntity.left + interval,
           top: fcLineMap[lineIds[trainIndex]].top - 22,
         }
     );
-
+    idEntity.set(
+        {
+          left: trainEntity.left,
+          top: trainEntity.top - 17,
+        }
+    );
+    // 为列车添加鼠标提示信息
+    // trainEntity.on('mousemove', function () {
+    //   console.log('train mouse move');
+    //   let dire = direction === 'up' ? '上行' : '下行';
+    //   let content = '列车id: ' + trainData['id'] + '\n' + '行驶方向:' + dire;
+    //   let left = event.pageX + 15;
+    //   let top = event.pageY + 15;
+    //   if (document.getElementById('trainTip')) {
+    //     let trainTip = document.getElementById('trainTip');
+    //     trainTip.style.left = left + 'px';
+    //     trainTip.style.top = top + 'px';
+    //     trainTip.innerText = content;
+    //   } else {
+    //     let trainTip = document.createElement('div');
+    //     trainTip.id = 'trainTip';
+    //     trainTip.style.left = left + 'px';
+    //     trainTip.style.top = top + 'px';
+    //     trainTip.style.width = 100;
+    //     trainTip.style.height = '95px';
+    //     trainTip.style.position = 'absolute';
+    //     trainTip.style.zIndex = 9999;
+    //     trainTip.style.background = 'rgba(255, 255, 255, 0.8)';
+    //     trainTip.innerText = content;
+    //     trainTip.style.textAlign = 'center';
+    //     document.body.appendChild(trainTip);
+    //   }
+    // });
+    // trainEntity.on('mouseout', function () {
+    //   console.log('train mouse out');
+    //   if (document.getElementById('trainTip')) {
+    //     document.body.removeChild(document.getElementById('trainTip'));
+    //   }
+    // });
   });
 }
 

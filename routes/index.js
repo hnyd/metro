@@ -1,3 +1,5 @@
+// import {connection} from "../src/util/sysUtil";
+
 let express = require('express');
 let router = express.Router();
 let initDate = require('../src/service/link/initDate');
@@ -21,6 +23,13 @@ module.exports = function (app) {
   });
 
   app.get('/login', function (request, response, next) {
+    // connection.query('SELECT * from user', function (err, rows, fields) {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   console.log('The solution is: ', rows[0].solution)
+    // });
+
     if (request.cookies && request.cookies.user) {
       response.render('index');
     } else {
