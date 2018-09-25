@@ -3,9 +3,10 @@
  * Created by Captain on 2018/3/14 16:09.
  */
 
+import axios from 'axios' // 引入未配置的axios服务
+
 import path from 'path'
 import xmlParser from 'xml2js'
-import {axios} from 'sysUtil'
 import {colorTrans, getFc} from "stationUtil"
 import link from '../../model/link.js'
 import {system} from "../../util/sysUtil";
@@ -599,13 +600,25 @@ function hideSwitchId() {
  */
 function fetchATSData() {
   return new Promise((resolve, reject) => {
-    axios.get('/linkData').then(function (response) {
-      // console.log('--> response: ', response);
+
+    axios({
+            method: 'get',
+            url: 'http://localhost:3000/linkData'
+          }).then(function (response) {
+      console.log('--> linkData response: ', response);
       resolve(response.data);
     }).catch(function (error) {
       console.log('--> fetchATSData error: ', error);
       reject(error);
     });
+
+    // axios.get('/linkData').then(function (response) {
+    //   console.log('--> linkData response: ', response);
+    //   resolve(response.data);
+    // }).catch(function (error) {
+    //   console.log('--> fetchATSData error: ', error);
+    //   reject(error);
+    // });
   });
 }
 

@@ -75,11 +75,15 @@
       data: new Date()
     };
 
-    axios.post('/login', {
+    axios.post('http://127.0.0.1:8000/people/login/', {
       username: username,
       password: password
     }).then(function (response) {
       console.log('--> login success', response);
+      let hours = 5;
+      let date = new Date();
+      date.setTime(date.getTime() + hours * 3600 * 1000);
+      document.cookie = 'user=' + username + ";expires=" + date.toUTCString();
       window.location.href = '/';
     }).catch(function (error) {
       console.log('--> login failed:', error)

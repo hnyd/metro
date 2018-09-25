@@ -1,8 +1,11 @@
 // import {connection} from "../src/util/sysUtil";
 
+// import {axios} from "../src/util/sysUtil";
+
 let express = require('express');
 let router = express.Router();
 let initDate = require('../src/service/link/initDate');
+// let axios = require('../src/util/sysUtil');
 
 /* GET home page. */
 module.exports = function (app) {
@@ -45,6 +48,28 @@ module.exports = function (app) {
       response.status(400);
       response.send('bad request!');
     } else {
+      // axios.post('http://localhost:8000/people/login/', {
+      //   username: loginForm.username,
+      //   password: loginForm.password
+      // }).then(function (res) {
+      //   console.log('response: ', res);
+      // }).then(function (error) {
+      //   console.log('--> login failed:', error)
+      // });
+
+      // axios({
+      //         method: 'post',
+      //         url: 'http://localhost:8000/people/login/',
+      //         data: {
+      //           username: loginForm.username,
+      //           password: loginForm.password
+      //         }
+      //       }).then(function (res) {
+      //   console.log('response: ', res);
+      // }).then(function (error) {
+      //   console.log('--> login failed:', error)
+      // });
+
       if (loginForm.username === 'admin' && loginForm.password === 'admin') {
         response.cookie('user', loginForm.username,
                         {expires: new Date(Date.now() + 24 * 3600 * 1000), httpOnly: true});
@@ -56,6 +81,7 @@ module.exports = function (app) {
     }
   });
 
+  // todo remove
   app.get('/logout', function (request, response) {
     if (request.cookies && request.cookies.user) {
       response.cookie('user', request.cookies.user,

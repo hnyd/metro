@@ -9,13 +9,21 @@ let userInit = function () {
   });
 };
 
+/**
+ * 注销
+ */
 function logout() {
-  axios.get('/logout').then(function (response) {
-    console.log('--> logout success: ', response);
-    window.location.href = '/login';
-  }).catch(function (error) {
-    console.log('--> logout fail:', error)
-  });
+  let date = new Date();
+  date.setTime(date.getTime() - 1000);
+  document.cookie = 'user=xx;expires=' + date.toUTCString();
+  window.location.href = '/';
+
+  // axios.get('/logout').then(function (response) {
+  //   console.log('--> logout success: ', response);
+  //   window.location.href = '/login';
+  // }).catch(function (error) {
+  //   console.log('--> logout fail:', error)
+  // });
 }
 
 export {userInit};
