@@ -9,6 +9,7 @@ let linkMap = {};
 let fcLineMap = {}; // fc 列车 object映射map
 let runTrainList = []; // 运行列车modal
 let runTrainFcMap = {}; // 运行列车实体绘制对象映射map
+let runTrainHeadFcMap = {}; // 运行列车车头实体绘制对象映射map
 let runTrainIdFcMap = {}; // 运行列车名称绘制对象映射map
 
 let link = {
@@ -60,8 +61,16 @@ let link = {
     runTrainFcMap[id] = trainFc;
   },
 
+  addRunTrainHeadFc: function (id, headFc) {
+    runTrainHeadFcMap[id] = headFc;
+  },
+
   getRunFcMap: function () {
     return runTrainFcMap;
+  },
+
+  getRunHeadFcMap: function () {
+    return runTrainHeadFcMap;
   },
 
   addRunTrainIdFc: function (id, idFc) {
