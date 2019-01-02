@@ -6,20 +6,13 @@ import context from '../../model/context';
 import link from '../../model/link';
 
 // 上行线路id列表
-let upLineIds = [37, 39, 40, 41, 43, 45, 46, 48, 49, 50, 51, 52,
-                 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 81, 97, 98, 99, 100, 101, 102, 103,
-                 104, 105, 106, 108, 109, 111, 112, 113, 115, 116, 135, 136, 137, 138, 139, 140,
-                 141, 142, 144, 145, 146, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 190,
-                 191, 192, 194, 195, 217, 218, 219, 220, 221, 222, 223, 225, 227, 228, 229];
+let upLineIds = [45, 46, 48, 49, 50, 51, 52, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 81, 97,
+                 98, 99, 100, 101, 102, 217, 218, 219, 220, 221, 222, 223, 225, 227, 228, 229];
 // 下行线路id列表
-let downLineIds = [215, 214, 213, 211, 209, 208, 207, 206, 205, 204, 203, 178, 176, 175, 174, 173,
-                   172, 171, 170, 236, 169, 134, 133, 131, 130, 129, 128, 127, 126, 125, 96, 94, 93,
-                   92, 90, 89, 88, 87, 86, 85, 84, 83, 82, 67, 66, 64, 63, 62, 61, 60, 59, 58, 57,
-                   56, 55, 54, 25, 24, 235, 23, 22, 20, 19, 16, 15, 14, 13, 11, 10, 8, 7, 6, 4, 3,
-                   2];
+let downLineIds = [215, 214, 213, 211, 209, 208, 207, 206, 205, 204, 87, 86, 85, 84, 83, 82, 67, 66,
+                   64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 25, 24, 235, 23, 22, 20, 19];
 // 车站线路id列表
-let stationLineIds = [13, 39, 24, 51, 55, 69, 58, 72, 62, 77, 84, 98, 88, 103, 126, 136, 129, 139,
-                      170, 180, 174, 185, 204, 217, 207, 220];
+let stationLineIds = [24, 51, 55, 69, 58, 72, 62, 77, 84, 98, 204, 217, 207, 220];
 let stationStopMap = {};
 
 let lineIds = upLineIds;
@@ -58,12 +51,22 @@ function startRunTest() {
         {
           left: fcLineMap[lineIds[0]].left - 40,
           top: fcLineMap[lineIds[0]].top - 22,
-          fill: '#cc9900',
+          fill: 'green',
           width: 40,
           height: 20
         }
     );
+    let headEntity = new fabric.Triangle(
+        {
+          width: 20,
+          height: 7,
+          fill: 'green',
+          left: trainEntity.left + 50,
+          top: trainEntity.top,
+          angle: 90
+        });
     fc.add(trainEntity);
+    fc.add(headEntity);
     let train = {
       id: 'train-test',
       type: 'real',
@@ -72,6 +75,7 @@ function startRunTest() {
     };
     link.addRunTrain(train);
     link.addRunTrainFc('train-test', trainEntity);
+    link.addRunTrainHeadFc('train-test', headEntity);
   }
 
   aniInterval = window.setInterval(trainAnimation, 1500);
@@ -88,15 +92,17 @@ function stopRunTest() {
 }
 
 function trainAnimation() {
-  console.log();
   link.getRunTrain().forEach(function (trainData, index, array) {
     let trainIndex = trainData['trainIndex'];
     let direction = trainData['direction'];
     let lineIds = direction === 'up' ? upLineIds : downLineIds;
     let runFcMap = link.getRunFcMap();
+    let runHeadFcMap = link.getRunHeadFcMap();
     let runIdFcMap = link.getRunTrainIdFcMap();
     let trainEntity;
+    let headEntity;
     let idEntity;
+    // 获取列车绘制实体
     if (runFcMap.hasOwnProperty(trainData['id'])) {
       trainEntity = runFcMap[trainData['id']];
     } else {
@@ -104,7 +110,7 @@ function trainAnimation() {
           {
             left: fcLineMap[lineIds[trainIndex]].left - 40,
             top: fcLineMap[lineIds[trainIndex]].top - 22,
-            fill: '#cc9900',
+            fill: 'green',
             width: 40,
             height: 20
           }
@@ -112,6 +118,26 @@ function trainAnimation() {
       fc.add(trainEntity);
       link.addRunTrainFc(trainData['id'], trainEntity);
     }
+    // 获取车头绘制实体
+    if (runHeadFcMap.hasOwnProperty(trainData['id'])) {
+      headEntity = runHeadFcMap[trainData['id']];
+    } else {
+      let left = direction === 'up' ? trainEntity.left + 50 : trainEntity.left - 10;
+      let top = direction === 'up' ? trainEntity.top : trainEntity.top + 20;
+      let angle = direction === 'up' ? 90 : 270;
+      headEntity = new fabric.Triangle(
+          {
+            width: 20,
+            height: 7,
+            fill: 'green',
+            left: left,
+            top: top,
+            angle: angle
+          });
+      fc.add(headEntity);
+      link.addRunTrainHeadFc(trainData['id'], headEntity);
+    }
+    // 获取列车名称绘制实体
     if (runIdFcMap.hasOwnProperty(trainData['id'])) {
       idEntity = runIdFcMap[trainData['id']];
     } else {
@@ -193,7 +219,15 @@ function trainAnimation() {
     trainEntity.set(
         {
           left: trainEntity.left + interval,
-          top: fcLineMap[lineIds[trainIndex]].top - 22,
+          top: fcLineMap[lineIds[trainIndex]].top - 22
+        }
+    );
+    let left = direction === 'up' ? trainEntity.left + 50 : trainEntity.left - 10;
+    let top = direction === 'up' ? trainEntity.top : trainEntity.top + 20;
+    headEntity.set(
+        {
+          left: left,
+          top: top
         }
     );
     idEntity.set(
