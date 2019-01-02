@@ -3,12 +3,14 @@
  * Created by Captain on 2018/3/14 16:09.
  */
 
-import axios from 'axios' // 引入未配置的axios服务
+// import {ws} from "../../network/utils";
 
+import axios from 'axios' // 引入未配置的axios服务
 import path from 'path'
 import xmlParser from 'xml2js'
 import {colorTrans, getFc} from "stationUtil"
 import link from '../../model/link.js'
+import contModel from '../../model/context.js'
 import {system} from "../../util/sysUtil";
 import {upLineOptions, animateLineData} from "../dynamic/animate";
 
@@ -32,6 +34,166 @@ let context = {
 let mouseLineIndexId;
 let mouseLineIndexKey;
 let gridOptions;
+let idList = [];
+let showLineList = [19, 21, 20, 22, 23, 235, 24, 25, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66,
+                    67, 82, 83, 84, 85, 86, 87, 102, 101, 100, 99, 98, 97, 81, 79, 80, 65, 78, 77,
+                    76, 75, 74, 73, 72, 71, 70, 69, 68, 52, 51, 50, 49, 48, 46, 45, 47, 204, 217,
+                    205, 206, 218, 219, 207, 220, 208, 221, 222, 210, 226, 225, 211, 213,
+                    227, 228, 214, 215, 216, 230, 209, 223, 229];
+let rightLineList = [217, 204, 205, 206, 207, 208, 210, 226, 209, 211, 213, 214, 215, 216, 230, 228,
+                     229, 227, 225, 223, 222, 221, 220, 219, 218];
+let showStationList = [2, 3, 4, 5, 6, 12, 13];
+let showPlatformList = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 23, 24, 25, 26]; // 屏蔽门psd/站台stage显示id列表
+let isChange = true;
+let offset = 1600;
+let rightOffset = 6501.2;
+let signalMap = contModel.getSignal();
+let stopMap = contModel.getStop();
+let turnoutMap = contModel.getTurnout();
+
+let base = {
+  'Line': {
+    "eFlag": "Line",  // 元素标识
+    "id": 88,         // 元素id
+    "stationId": 7,   // 关联的车站的id
+    "contentName": "",  // 显示内容
+    "contentNameX": 0,  // 显示内容相对元素原点X坐标
+    "contentNameY": 0,  // 显示内容相对元素原点Y坐标
+    "stressShow": false,  // 突出显示
+    "wordName": "ºÚÌå",  // 字体
+    "wordSize": 15,      // 字段大小
+    "wordColor": -1,     // 字体颜色 十进制 需转化为十六进制  -> #FFFFFF
+    "displayStation": [5, 7], // 可显示车站列表，代表有哪些车站可以显示该轨道
+    "controlStation": [7],    // 可控车站列表，代表有哪些车站可以控制该轨道
+    "pointList": [
+      {
+        "x": 5023.015,
+        "y": 742.540955,
+        "index": 0
+      },
+      {
+        "x": 5323.308,
+        "y": 742.540955,
+        "index": 1
+      }
+    ],            // 元素的绝对坐标
+    "height": 8,  // 高度
+    "horizontalAngle": 0,  // 水平(旋转)角度
+    "selectedColor": 16777215, // 被选择时的颜色
+    "backgroudColor": -1,  // 背景颜色  -1代表无
+    "whetherShow": true,  // 是否显示
+    "whetherUse": false,   // 是否可用
+    "whetherPermission": false,  // 是否具有操作权限
+    "faultColor": 16711936,  // 故障颜色
+    "startPointType": 2, //  1-尽头线   2-计轴点   3-道岔
+    "endPointType": 2, //   1-尽头线   2-计轴点   3-道岔
+    "lineLength": 12900,
+    "direction": 170
+  },
+  'Station': {
+    "eFlag": "Station",
+    "id": 2,
+    "contentName": "±±Ô·Õ¾",
+    "contentNameX": 0,  // 显示内容相对元素原点X坐标
+    "contentNameY": 0,  // 显示内容相对元素原点Y坐标
+    "x": 2160,  // 元素原点坐标X
+    "y": 73.92357,  // 元素原点坐标Y
+    "stressShow": false,  // 突出显示
+    "wordName": "ºÚÌå",   // 字体
+    "wordSize": 36,
+    "wordColor": -1,
+    "width": 10,
+    "height": 20,
+    "backgroudColor": -1,
+    "whetherShow": true,
+    "whetherUse": false,
+    "whetherPermission": false,
+    "horizontalAngle": 0,
+    "faultColor": 16711936,
+    "selectedColor": 16777215,
+    "kiloContentX": 55,
+    "kiloContentY": 48,
+    "stationState": 0, // 车站状态 0正常 1故障
+    "stationType": null,  // 车站类别
+  },
+  'Door': {
+    "eFlag": "Door",
+    "id": 1,
+    "stationId": 1,
+    "contentName": "",
+    "contentNameX": 0,
+    "contentNameY": 0,
+    "x": 1166.308,
+    "y": 230,
+    "stressShow": false,
+    "height": 4,
+    "width": 120,
+    "wordName": "ºÚÌå",
+    "wordStyle": 1,
+    "displayStation": [
+      1,
+    ],
+    "controlStation": [
+      1,
+    ],
+    "wordSize": 15,
+    "wordColor": -1,
+    "whetherShow": true,
+    "whetherUse": false,
+    "whetherPermission": false,
+    "backgroudColor": -16711936,
+    "horizontalAngle": 0,
+    "defaultColor": 256,
+    "selectedColor": 16777215,
+    "faultColor": 16711936,
+    "state": "Close",  // 屏蔽门状态 Close关闭 Open打开 Error故障
+    "stopLocationId": 2,
+    "autoOrManual": 0,  // 自动或手动
+    "lineId": 13,
+    "linkDirection": 55  // 线路运行方向
+  },
+  'Stage': {
+    "eFlag": "Stage",
+    "id": 7,
+    "stationId": 4,
+    "contentName": "ÐÐÕþÖÐÐÄÕ¾",
+    "contentNameX": 0,
+    "contentNameY": 0,
+    "x": 0,
+    "y": 0,
+    "stressShow": false,
+    "wordName": "ºÚÌå",
+    "wordStyle": 1,
+    "wordSize": 15,
+    "wordColor": 16777215,
+    "displayStation": [5, 4,],
+    "controlStation": [4],
+    "height": 30,
+    "width": 200,
+    "whetherShow": true,
+    "whetherUse": false,
+    "whetherPermission": false,
+    "backgroudColor": -1,
+    "horizontalAngle": 0,
+    "faultColor": -8355712,
+    "selectedColor": 16777215,
+    "defaultTime": 30, // 默认停车时间（秒）
+    "minTime": 30, // 站台最小停车时间（秒）
+    "maxTime": 60, // 站台最大停车时间（秒）
+    "stopColor": 256, // 列车停站颜色(是列车的颜色)
+    "whetherStop": 0, // 列车是否稳定停靠
+    "jumpState": 0, // 站台跳停状态，0不调停，1跳停
+    "trainJumpStopList": [], // 跳停过的列车列表
+    "jumpStopColor": 65281,  // 跳停颜色
+    "lineId": 58,
+    "emergencyCloseIdList": [7], // 站台急停按钮编号
+    "openDoorStyle": 2, // 开门方式 1左开门 2有开门
+    "runDirection": 1  // 列车运行方向 0上行 1下行
+  }
+};
+let newElementList = {};
+let fcSignalMap = {};
+let fcStopMap = {};
 
 /**
  * 站场初始化
@@ -43,6 +205,81 @@ let initStation = function (graphContext) {
   clickEventInit();
 
   let startTime = new Date().getTime();
+
+  // 处理new数据
+  // resolveNewData().then(function (value) {
+  //   let nameMap = {
+  //     'Line': 1,
+  //     'Station': 1,
+  //     'Door': 1,
+  //     'Stage': 1,
+  //   };
+  //   // 逻辑和物理综合数据
+  //   let elementList = value['_elementList'];
+  //   let lineEntity = {};
+  //   let stationEntity = {};
+  //   let doorEntity = {};
+  //   let stageEntity = {};
+  //   for (let key in elementList) {
+  //     if (elementList[key]['eFlag'] && nameMap.hasOwnProperty(elementList[key]['eFlag'])) {
+  //       let flag = elementList[key]['eFlag'];
+  //
+  //       let entity = elementList[key];
+  //       let tmp = {};
+  //       for (let k in entity) {
+  //         if (base[flag].hasOwnProperty(k)) {
+  //           tmp[k] = entity[k];
+  //         }
+  //       }
+  //       let isPlatformShown = false;
+  //       showPlatformList.forEach(function (element, index, array) {
+  //         if (entity['id'] === element) {
+  //           isPlatformShown = true;
+  //         }
+  //       });
+  //       switch (flag) {
+  //         case 'Line':
+  //           let isLineShown = false;
+  //           showLineList.forEach(function (element, inedx, array) {
+  //             if (entity['id'] === element) {
+  //               isLineShown = true;
+  //             }
+  //           });
+  //           if (isLineShown) {
+  //             lineEntity[entity['id']] = tmp;
+  //           }
+  //           break;
+  //         case 'Station':
+  //           let isStationShown = false;
+  //           showStationList.forEach(function (element, inedx, array) {
+  //             if (entity['id'] === element) {
+  //               isStationShown = true;
+  //             }
+  //           });
+  //           if (isStationShown) {
+  //             stationEntity[entity['id']] = tmp;
+  //           }
+  //           break;
+  //         case 'Door':
+  //           if (isPlatformShown) {
+  //             doorEntity[entity['id']] = tmp;
+  //           }
+  //           break;
+  //         case 'Stage':
+  //           if (isPlatformShown) {
+  //             stageEntity[entity['id']] = tmp;
+  //           }
+  //           break;
+  //       }
+  //     }
+  //   }
+  //   newElementList['Line'] = lineEntity;
+  //   newElementList['Station'] = stationEntity;
+  //   newElementList['Door'] = doorEntity;
+  //   newElementList['Stage'] = stageEntity;
+  //   console.log('newELementList:', newElementList);
+  //   console.log('JSON:', JSON.stringify(newElementList));
+  // });
 
   // 初始化站场
   fetchATSData().then(function (value) {
@@ -185,11 +422,16 @@ function paint() {
   // 初始化fabric
   initFabric();
 
+  // paintTmp();
+
   paintLine();
   paintStation();
   paintPsd();
   paintPlatform();
   paintSwitch();
+
+  paintSignal();
+  paintStop();
 }
 
 /**
@@ -275,7 +517,50 @@ function initFabric() {
       // menu.style.visibility = 'hidden';
     }
   });
+}
 
+function paintTmp() {
+  let gray = new fabric.Circle(
+      {
+        radius: 20, fill: 'gray', left: 100, top: 100
+      });
+  let red = new fabric.Circle(
+      {
+        radius: 20, fill: 'red', left: 145, top: 100
+      });
+  let green = new fabric.Circle(
+      {
+        radius: 20, fill: 'green', left: 190, top: 100
+      });
+  let yellow = new fabric.Circle(
+      {
+        radius: 20, fill: 'yellow', left: 235, top: 100
+      });
+
+  let prompt = new fabric.Circle(
+      {
+        radius: 10, fill: 'red', left: 295, top: 100
+      });
+  fc.add(gray);
+  fc.add(red);
+  fc.add(green);
+  fc.add(yellow);
+  fc.add(prompt);
+
+  let rect = new fabric.Rect(
+      {
+        left: 100,
+        top: 20,
+        fill: 'green',
+        width: 50,
+        height: 20
+      });
+  let head = new fabric.Triangle(
+      {
+        width: 20, height: 7, fill: 'green', left: 160, top: 20, angle: 90
+      });
+  fc.add(rect);
+  fc.add(head);
 }
 
 /**
@@ -294,10 +579,14 @@ function paintLine() {
 
   let linkData = link.getLinkData();
   for (let key in linkData) {
+    if (!isShow(linkData[key]['id'], 'line') && isChange) {
+      continue;
+    }
+    let off = isShow(linkData[key]['id'], 'right') && isChange ? rightOffset : offset;
     let pointList = linkData[key]['pointList'];
-    let x1 = pointList[0]['X'];
+    let x1 = pointList[0]['X'] - off;
     let y1 = pointList[0]['Y'];
-    let x2 = pointList[1]['X'];
+    let x2 = pointList[1]['X'] - off;
     let y2 = pointList[1]['Y'];
     let line = new fabric.Line([x1, y1, x2, y2], option);
     fcLineList[linkData[key]['id']] = line;
@@ -349,7 +638,9 @@ function paintLine() {
     line.on('mousedown', function (options) {
       // 记录鼠标点击事件发生时 所处的line id
       let id = linkData[key]['id'];
-      console.log('LineId: ', id);
+      // console.log('LineId: ', id);
+      idList.push(id);
+      console.log('idList:', idList);
       mouseLineIndexId = id;
       mouseLineIndexKey = key;
 
@@ -408,9 +699,14 @@ function paintLine() {
  */
 function paintStation() {
   for (let key in stationData) {
+    if (!isShow(stationData[key]['id'], 'station') && isChange) {
+      continue;
+    }
+    let id = stationData[key]['id'];
+    let off = (id === 12 || id === 13) && isChange ? rightOffset : offset;
     if (stationData[key]['Content']) {
       let content = stationData[key]['Content'];
-      let x = stationData[key]['OriginX'];
+      let x = stationData[key]['OriginX'] - off;
       let y = stationData[key]['OriginY'];
       let line = new fabric.Line([x, y, x + 10, y], {
         strokeWidth: 1,
@@ -450,8 +746,13 @@ function paintPsd() {
     lockScalingY: true
   };
   for (let key in psdData) {
+    if (!isShow(psdData[key]['id'], 'platform') && isChange) {
+      continue;
+    }
+    let id = psdData[key]['id'];
+    let off = (id === 23 || id === 24 || id === 25 || id === 26) && isChange ? rightOffset : offset;
     let entity = psdData[key];
-    let x = entity['OriginX'] - 100;
+    let x = entity['OriginX'] - 100 - off;
     let y = entity['OriginY'] - 50;
     option['strokeWidth'] = entity['Height'];
     let width = entity['width'];
@@ -473,10 +774,16 @@ function paintPlatform() {
     lockScalingY: true
   };
   for (let key in platformData) {
+    if (!isShow(platformData[key]['id'], 'platform') && isChange) {
+      continue;
+    }
+    let id = platformData[key]['id'];
+    let off = (id === 23 || id === 24 || id === 25 || id === 26) && isChange ? rightOffset : offset;
     let entity = platformData[key];
-    let x = entity['OriginX'] - 100;
+    let lineId = entity['LinkId'];
+    let x = entity['OriginX'] - 100 - off;
     let y = entity['OriginY'] - 63;
-    let content = entity['Content'];
+    let content = entity['Content'] + '-' + entity['id'];
     option['strokeWidth'] = entity['Height'];
     let width = entity['width'];
     let line = new fabric.Line([x, y, x + width, y], option);
@@ -503,14 +810,249 @@ function paintPlatform() {
         platformTip.style.textAlign = 'center';
         document.body.appendChild(platformTip);
       }
+      fcLineList[lineId].set(
+          {
+            stroke: '#e0d817'
+          }
+      );
+      fc.renderAll();
     });
     line.on('mouseout', function () {
       if (document.getElementById('platformTip')) {
         document.body.removeChild(document.getElementById('platformTip'));
       }
+      fcLineList[lineId].set(
+          {
+            stroke: '#0827ed'
+          }
+      );
+      fc.renderAll();
     });
     fc.add(line);
   }
+}
+
+/**
+ * 绘制信号机
+ */
+function paintSignal() {
+  for (let key in signalMap) {
+    let signal = signalMap[key];
+    let id = signal['id'];
+    let x = signal['x'];
+    let y = signal['y'];
+    let status = signal['status'];
+    paintCircle(id, x, y, status);
+  }
+  contModel.setFcSignalMap(fcSignalMap);
+}
+
+function paintCircle(id, x, y, status) {
+  let one = new fabric.Circle(
+      {
+        radius: 10, fill: 'gray', left: x, top: y
+      }
+  );
+  let two = new fabric.Circle(
+      {
+        radius: 10, fill: 'gray', left: x + 23, top: y
+      }
+  );
+  let three = new fabric.Circle(
+      {
+        radius: 10, fill: 'gray', left: x + 46, top: y
+      }
+  );
+  let option = {
+    transparentCorners: true,
+    strokeWidth: 22,
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  };
+
+  let statusMsg = '状态: 故障';
+  switch (status) {
+    case 4:
+      statusMsg = '状态: 禁止通行';
+      one.set(
+          {
+            fill: 'red'
+          }
+      );
+      break;
+    case 2:
+      statusMsg = '状态: 直行';
+      two.set(
+          {
+            fill: 'green'
+          }
+      );
+      break;
+    case 1:
+      statusMsg = '状态: 弯股';
+      three.set(
+          {
+            fill: 'yellow'
+          }
+      );
+      break;
+  }
+
+  // 为三个信号机添加覆盖面板
+  let cover = new fabric.Line([x, y, x + 68, y], option);
+  // 为信号机覆盖面板添加鼠标悬停提示框，并高亮显示道岔
+  cover.on('mousemove', function () {
+    removeCoorDiv(); // 先移除鼠标位置提示div
+    let left = event.pageX + 15;
+    let top = event.pageY + 15;
+    let turnoutId = signalMap[id]['turnoutId'];
+    let turnout = turnoutMap[turnoutId];
+    let lineMap = turnout['lineMap'];
+    let content = '信号机: ' + id + '\n' + statusMsg + '\n' + '道岔: ' + lineMap;
+    if (document.getElementById('signalTip')) {
+      let signalTip = document.getElementById('signalTip');
+      signalTip.style.left = left + 'px';
+      signalTip.style.top = top + 'px';
+      signalTip.innerText = content;
+    } else {
+      let signalTip = document.createElement('div');
+      signalTip.id = 'signalTip';
+      signalTip.style.left = left + 'px';
+      signalTip.style.top = top + 'px';
+      signalTip.style.width = '200px';
+      signalTip.style.height = '75px';
+      signalTip.style.position = 'absolute';
+      signalTip.style.zIndex = 9999;
+      signalTip.style.background = 'rgba(255, 255, 255, 0.8)';
+      signalTip.innerText = content;
+      signalTip.style.textAlign = 'center';
+      document.body.appendChild(signalTip);
+    }
+    lineMap.forEach(function (element, index, array) {
+      fcLineList[element].set(
+          {
+            stroke: '#e0d817'
+          }
+      );
+    });
+    fc.renderAll();
+  });
+  cover.on('mouseout', function () {
+    let turnoutId = signalMap[id]['turnoutId'];
+    let turnout = turnoutMap[turnoutId];
+    let lineMap = turnout['lineMap'];
+    if (document.getElementById('signalTip')) {
+      document.body.removeChild(document.getElementById('signalTip'));
+    }
+    lineMap.forEach(function (element, index, array) {
+      fcLineList[element].set(
+          {
+            stroke: '#0827ed'
+          }
+      );
+    });
+    fc.renderAll();
+  });
+  fc.add(one);
+  fc.add(two);
+  fc.add(three);
+  fc.add(cover); // 为三个信号机添加覆盖面板
+  let list = [];
+  list.push(one);
+  list.push(two);
+  list.push(three);
+  fcSignalMap[id] = list;
+}
+
+function paintStop() {
+  for (let key in stopMap) {
+    let stop = stopMap[key];
+    let id = stop['id'];
+    let x = stop['x'] - 9;
+    let y = stop['y'] - 66;
+    let status = stop['status'];
+    let color = "";
+    let statusMsg = '状态: ';
+    switch (status) {
+      case 0:
+        statusMsg += '故障';
+        color = "gray";
+        break;
+      case 1:
+        statusMsg += '正常';
+        color = "#80ff00";
+        break;
+      case 2:
+        statusMsg += '急停';
+        color = "red";
+        break;
+    }
+    let circle = new fabric.Circle(
+        {
+          radius: stop['radius'],
+          fill: color,
+          left: x,
+          top: y,
+          lockMovementX: true,
+          lockMovementY: true,
+          lockRotation: true,
+          lockScalingX: true,
+          lockScalingY: true
+        }
+    );
+    let stageId = stop['stageId'];
+    let stage = platformData['ElementKeyClass [_elementType=Platform, Id=' + stageId + ']'];
+    let lineId = stage['LinkId'];
+    let content = '急停按钮: ' + id + '\n' + statusMsg;
+    circle.on('mousemove', function () {
+      removeCoorDiv(); // 先移除鼠标位置提示div
+      let left = event.pageX + 15;
+      let top = event.pageY + 15;
+      if (document.getElementById('stopTip')) {
+        let stopTip = document.getElementById('stopTip');
+        stopTip.style.left = left + 'px';
+        stopTip.style.top = top + 'px';
+        stopTip.innerText = content;
+      } else {
+        let stopTip = document.createElement('div');
+        stopTip.id = 'stopTip';
+        stopTip.style.left = left + 'px';
+        stopTip.style.top = top + 'px';
+        stopTip.style.width = '150px';
+        stopTip.style.height = '50px';
+        stopTip.style.position = 'absolute';
+        stopTip.style.zIndex = 9999;
+        stopTip.style.background = 'rgba(255, 255, 255, 0.8)';
+        stopTip.innerText = content;
+        stopTip.style.textAlign = 'center';
+        document.body.appendChild(stopTip);
+      }
+      fcLineList[lineId].set(
+          {
+            stroke: '#e0d817'
+          }
+      );
+      fc.renderAll();
+    });
+    circle.on('mouseout', function () {
+      if (document.getElementById('stopTip')) {
+        document.body.removeChild(document.getElementById('stopTip'));
+      }
+      fcLineList[lineId].set(
+          {
+            stroke: '#0827ed'
+          }
+      );
+      fc.renderAll();
+    });
+    fc.add(circle);
+    fcStopMap[id] = circle;
+  }
+  contModel.setFcStopMap(fcStopMap);
+  // console.log("fcStopMap:", contModel.getFcStopMap());
 }
 
 function paintSwitch() {
@@ -595,6 +1137,21 @@ function hideSwitchId() {
   context.switchId = false;
 }
 
+function resolveNewData() {
+  return new Promise((resolve, reject) => {
+    axios({
+            method: 'get',
+            url: 'http://localhost:3000/newData'
+          }).then(function (response) {
+      console.log('--> newData response: ', response);
+      resolve(response.data);
+    }).catch(function (error) {
+      console.log('--> fetchATSData error: ', error);
+      reject(error);
+    });
+  });
+}
+
 /**
  * 初始化站场数据
  */
@@ -649,7 +1206,8 @@ function formateLineData(graphContext) {
     maxY = value['pointList'][1]['Y'] > maxY ? value['pointList'][1]['Y'] : maxY;
   }
   // 根据长、宽初始化canvas画布，并获取canvas 2d画笔
-  cvs = graphContext.initCVS(maxX + 300, (maxY - minY) + 400);
+  // cvs = graphContext.initCVS(maxX + 300, (maxY - minY) + 400);
+  cvs = graphContext.initCVS(5300, (maxY - minY) + 400);
   console.log('--> formated data:', lineData);
   link.setLinkData(lineData);
 }
@@ -775,6 +1333,31 @@ function tmp(canvas) {
   canvas.arc(675, 75, 10, 0, Math.PI * 2);
   canvas.strokeStyle = '#fff81a';
   canvas.stroke();
+}
+
+function isShow(id, type) {
+  let boo = false;
+  let list;
+  switch (type) {
+    case 'line':
+      list = showLineList;
+      break;
+    case 'station':
+      list = showStationList;
+      break;
+    case 'platform':
+      list = showPlatformList;
+      break;
+    case 'right':
+      list = rightLineList;
+      break;
+  }
+  list.forEach(function (element, index, array) {
+    if (element === id) {
+      boo = true;
+    }
+  });
+  return boo;
 }
 
 export default initStation;

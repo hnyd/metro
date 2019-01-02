@@ -5,6 +5,7 @@
 let express = require('express');
 let router = express.Router();
 let initDate = require('../src/service/link/initDate');
+let initNewData = require('../src/service/link/initNew');
 // let axios = require('../src/util/sysUtil');
 
 /* GET home page. */
@@ -12,6 +13,12 @@ module.exports = function (app) {
 
   app.get('/linkData', function (request, response, next) {
     initDate(data => {
+      response.send(data);
+    })
+  });
+
+  app.get('/newData', function (request, response, next) {
+    initNewData(data => {
       response.send(data);
     })
   });
