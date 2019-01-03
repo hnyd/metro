@@ -408,6 +408,9 @@ let turnout = {
 };
 let fcSignalMap = {};
 let fcStopMap = {};
+let errorMap = {
+  "Train": {}, "Signal": {}, "Stop": {}, "Door": {}
+};
 
 let context = {
 
@@ -453,7 +456,15 @@ let context = {
 
   setFcStopMap: function (map) {
     fcStopMap = map;
-  }
+  },
+
+  getErrorMap: function () {
+    return errorMap;
+  },
+
+  setErrorMap: function (map) {
+    errorMap = map
+  },
 
 };
 
