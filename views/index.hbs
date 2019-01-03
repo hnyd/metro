@@ -65,8 +65,17 @@
           <a id="runChart" class="dropdown-item" href="#">列车运行图</a>
         </div>
       </li>
-      <li class="nav-item">
-        <a id="errorMsg" class="nav-link" href="#">故障信息</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          故障信息
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a id="error-train" class="dropdown-item" href="#">列车</a>
+          <a id="error-signal" class="dropdown-item" href="#">信号机</a>
+          <a id="error-stop" class="dropdown-item" href="#">急停按钮</a>
+          <a id="error-door" class="dropdown-item" href="#">屏蔽门</a>
+        </div>
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
@@ -475,7 +484,7 @@
       <div class="modal-body">
         <form class="form-inline">
           <div class="form-group">
-            <label for="staticEmail" class="col-form-label">列车名称</label>
+            <label for="staticEmail" class="col-form-label">列车名称: </label>
             <input id="mockLineName" class="form-control form-control-sm" type="text" style="margin-left: 30px">
           </div>
           <div class="form-group">
@@ -510,6 +519,116 @@
   </div>
 </div>
 
+<!-- 列车故障信息Dialog -->
+<div id="error-train-dialog" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">列车故障信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="error-train-info" style="width: 100%;height: 600px" class="ag-theme-balham">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 信号机故障信息Dialog -->
+<div id="error-signal-dialog" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">信号机故障信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="error-signal-info" style="width: 100%;height: 600px" class="ag-theme-balham">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 急停按钮故障信息Dialog -->
+<div id="error-stop-dialog" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">急停按钮故障信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="error-stop-info" style="width: 100%;height: 600px" class="ag-theme-balham">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 屏蔽门故障信息Dialog -->
+<div id="error-door-dialog" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">屏蔽门故障信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="error-door-info" style="width: 100%;height: 600px" class="ag-theme-balham">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 注入故障Dialog -->
+<div id="add-error-dialog" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">注入故障</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label id="errorDialogType" for="staticEmail" class="col-form-label">元素：</label>
+            <!--<p id="errorDialogType"></p>-->
+          </div>
+          <div class="form-group">
+            <label id="errorDialogStatus" for="staticEmail" class="col-form-label">当前状态：</label>
+            <!--<p id="errorDialogStatus"></p>-->
+          </div>
+          <div class="form-group">
+            <label for="staticEmail" class="col-form-label">故障备注: </label>
+            <textarea id="errorRemark" class="form-control"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="addErrorBT" type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- canvas画布 -->
 <canvas id="canvas"></canvas>
 
@@ -519,8 +638,21 @@
   <p id="switchIdClick">显示道岔名</p>
 </div>
 
-<div id="lineMenu">
+<div id="lineMenu" class="menu">
   <p id="mockTrainClick">在此新建模拟列车</p>
+</div>
+
+<div id="signalMenu" class="menu">
+  <p id="signalDirect">直行</p>
+  <p id="signalTurn">弯股</p>
+  <p id="signalForbid">禁止通行</p>
+  <p id="addError">故障注入</p>
+</div>
+
+<div id="stopMenu" class="menu">
+  <p id="stopNormal">正常</p>
+  <p id="stopUrgent">紧急</p>
+  <p id="addError">故障注入</p>
 </div>
 
 <div id="loading">
@@ -605,12 +737,35 @@
     visibility: hidden;
   }
 
-  #lineMenu p {
+  #signalMenu {
+    background: rgb(255, 255, 255);
+    width: 120px;
+    position: absolute;
+    z-index: 9999;
+    visibility: hidden;
+  }
+
+  #stopMenu {
+    background: rgb(255, 255, 255);
+    width: 100px;
+    position: absolute;
+    z-index: 9999;
+    visibility: hidden;
+  }
+
+  .menu p {
     margin-top: 5px;
     margin-bottom: 5px;
     text-align: center;
     font-size: 14px;
   }
+
+  /*#lineMenu p {*/
+    /*margin-top: 5px;*/
+    /*margin-bottom: 5px;*/
+    /*text-align: center;*/
+    /*font-size: 14px;*/
+  /*}*/
 
   #mockDialogDirection {
     margin-left: 10px;
