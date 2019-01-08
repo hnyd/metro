@@ -195,6 +195,17 @@ let newElementList = {};
 let fcSignalMap = {};
 let fcStopMap = {};
 
+let errorMap = contModel.getErrorMap();
+let errorId = -1;
+let errorFlag = '';
+let errorDialogType = '';
+let errorDialogStatus = '';
+
+let strMap = {
+  'Signal': signalMap,
+  'Stop': stopMap
+};
+
 /**
  * 站场初始化
  * @param graphContext
@@ -326,8 +337,73 @@ function clickEventInit() {
         });
   });
 
+  $('#addSignalError').click(function () {
+    closeAllMenu();
+    $('#add-error-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        });
+  });
+
+  $('#addStopError').click(function () {
+    closeAllMenu();
+    $('#add-error-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        });
+  });
+
+  /**
+   * 站场列车信息按钮
+   */
   $('#trainDialog').click(function () {
     $('#trainInfoD').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        }
+    );
+  });
+  /**
+   * 列车故障信息按钮
+   */
+  $('#error-train').click(function () {
+    $('#error-train-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        }
+    );
+  });
+  /**
+   * 信号机故障信息按钮
+   */
+  $('#error-signal').click(function () {
+    $('#error-signal-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        }
+    );
+  });
+  /**
+   * 急停按钮故障信息按钮
+   */
+  $('#error-stop').click(function () {
+    $('#error-stop-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        }
+    );
+  });
+  /**
+   * 屏蔽门故障信息按钮
+   */
+  $('#error-door').click(function () {
+    $('#error-door-dialog').modal(
         {
           backdrop: 'static',
           keyboard: false
@@ -368,11 +444,49 @@ function clickEventInit() {
     new agGrid.Grid(eGridDiv, gridOptions);
   });
 
+  $('#error-train-dialog').on('shown.bs.modal', function () {
+    let trainList = link.getRunTrain();
+    if (!gridOptions) {
+      gridOptions = {
+        suppressMovableColumns: true,
+      };
+    }
+    let columnDefs = [
+      {headerName: "列车\\信息", field: "line", width: 150},
+      {headerName: "运行方向", field: "direction", width: 150},
+      {headerName: "列车类型", field: "type", width: 150},
+      {headerName: "状态", field: "status", width: 300}
+    ];
+    let rowData = [];
+    trainList.forEach(function (element, index, array) {
+      let tmp = {};
+      tmp['line'] = element['id'];
+      tmp['direction'] = element['direction'] === 'up' ? '上行' : '下行';
+      tmp['type'] = element['type'] === 'mock' ? '模拟' : '实体';
+      tmp['status'] = '正常';
+      rowData.push(tmp);
+    });
+    if (gridOptions.hasOwnProperty('rowData')) {
+      gridOptions.api.setRowData([]);
+      gridOptions.api.updateRowData({add: rowData});
+      return;
+    }
+    gridOptions['columnDefs'] = columnDefs;
+    gridOptions['rowData'] = rowData;
+    let eGridDiv = document.querySelector('#error-train-info');
+    new agGrid.Grid(eGridDiv, gridOptions);
+  });
+
   $('#mockTrainD').on('shown.bs.modal', function () {
     let linkData = link.getLinkData();
     let direction = linkData[mouseLineIndexKey]['lineDirection'] === 55 ? '上行' : '下行';
     $('#mockDialogDirection').text(direction);
 
+  });
+
+  $('#add-error-dialog').on('shown.bs.modal', function () {
+    $('#errorDialogType').text("元素:   " + errorDialogType);
+    $('#errorDialogStatus').text("当前状态:   " + errorDialogStatus);
   });
 
   $('#addMockTrainBT').click(function () {
@@ -407,6 +521,44 @@ function clickEventInit() {
     alert('模拟列车添加成功');
     $('#mockTrainD').modal('hide');
     console.log('run link list: ', link.getRunTrain());
+  });
+
+  $('#addErrorBT').click(function () {
+    let remark = $('#errorRemark').val();
+    let mapData = errorMap[errorFlag];
+    mapData[errorId] = {
+      'remark': remark
+    };
+    errorMap[errorFlag] = mapData;
+    contModel.setErrorMap(errorMap);
+    alert('注入故障成功');
+    $('#add-error-dialog').modal('hide');
+    console.log('error map:', errorMap);
+
+    switch (errorFlag) {
+      case 'Signal':
+        signalMap[errorId]['status'] = 0;
+        // fcSignalMap[errorId][0].set(
+        //     {
+        //       fill: 'gray'
+        //     });
+        // fcSignalMap[errorId][1].set(
+        //     {
+        //       fill: 'gray'
+        //     });
+        // fcSignalMap[errorId][2].set(
+        //     {
+        //       fill: 'gray'
+        //     });
+        paintSignal();
+        break;
+      case 'Stop':
+        stopMap[errorId]['status'] = 0;
+        paintStop();
+        break;
+    }
+
+    fc.renderAll();
   });
 
 }
@@ -956,6 +1108,24 @@ function paintCircle(id, x, y, status) {
     });
     fc.renderAll();
   });
+  cover.on('mousedown', function (options) {
+    errorId = id;
+    errorFlag = 'Signal';
+    errorDialogType = '信号机';
+    errorDialogStatus = statusMsg.substr(4);
+
+    document.getElementById('menu').style.visibility = 'hidden';
+    let menu = document.getElementById('signalMenu');
+    if (options.button && options.button === 3) {
+      let left = event.pageX + 15;
+      let top = event.pageY + 15;
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+      menu.style.visibility = 'visible';
+    } else if (options.button && options.button === 1) {
+      menu.style.visibility = 'hidden';
+    }
+  });
   fc.add(one);
   fc.add(two);
   fc.add(three);
@@ -1048,6 +1218,24 @@ function paintStop() {
       );
       fc.renderAll();
     });
+    circle.on('mousedown', function (options) {
+      errorId = id;
+      errorFlag = 'Stop';
+      errorDialogType = '急停按钮';
+      errorDialogStatus = statusMsg.substr(4);
+
+      document.getElementById('menu').style.visibility = 'hidden';
+      let menu = document.getElementById('stopMenu');
+      if (options.button && options.button === 3) {
+        let left = event.pageX + 15;
+        let top = event.pageY + 15;
+        menu.style.left = left + 'px';
+        menu.style.top = top + 'px';
+        menu.style.visibility = 'visible';
+      } else if (options.button && options.button === 1) {
+        menu.style.visibility = 'hidden';
+      }
+    });
     fc.add(circle);
     fcStopMap[id] = circle;
   }
@@ -1137,20 +1325,20 @@ function hideSwitchId() {
   context.switchId = false;
 }
 
-function resolveNewData() {
-  return new Promise((resolve, reject) => {
-    axios({
-            method: 'get',
-            url: 'http://localhost:3000/newData'
-          }).then(function (response) {
-      console.log('--> newData response: ', response);
-      resolve(response.data);
-    }).catch(function (error) {
-      console.log('--> fetchATSData error: ', error);
-      reject(error);
-    });
-  });
-}
+// function resolveNewData() {
+//   return new Promise((resolve, reject) => {
+//     axios({
+//             method: 'get',
+//             url: 'http://localhost:3000/newData'
+//           }).then(function (response) {
+//       console.log('--> newData response: ', response);
+//       resolve(response.data);
+//     }).catch(function (error) {
+//       console.log('--> fetchATSData error: ', error);
+//       reject(error);
+//     });
+//   });
+// }
 
 /**
  * 初始化站场数据
@@ -1255,6 +1443,12 @@ function closeAllMenu() {
   }
   if (document.getElementById('menu')) {
     document.getElementById('menu').style.visibility = 'hidden';
+  }
+  if (document.getElementById('signalMenu')) {
+    document.getElementById('signalMenu').style.visibility = 'hidden';
+  }
+  if (document.getElementById('stopMenu')) {
+    document.getElementById('stopMenu').style.visibility = 'hidden';
   }
 }
 
