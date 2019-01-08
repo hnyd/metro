@@ -78,6 +78,19 @@
         </div>
       </li>
     </ul>
+
+    <div class="alert alert-danger alert-dismissible fade show my-alert" role="alert">
+      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="alert alert-primary alert-dismissible fade show my-alert" role="alert">
+      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <div class="form-inline my-2 my-lg-0">
       <button id="startRun" type="button" class="btn btn-primary my-btn" data-toggle="modal"
               data-target="#commonDialog">开始
@@ -646,13 +659,15 @@
   <p id="signalDirect">直行</p>
   <p id="signalTurn">弯股</p>
   <p id="signalForbid">禁止通行</p>
-  <p id="addError">故障注入</p>
+  <p id="addSignalError">故障注入</p>
+  <p id="removeError">撤销故障</p>
 </div>
 
 <div id="stopMenu" class="menu">
   <p id="stopNormal">正常</p>
   <p id="stopUrgent">紧急</p>
-  <p id="addError">故障注入</p>
+  <p id="addStopError">故障注入</p>
+  <p id="removeError">撤销故障</p>
 </div>
 
 <div id="loading">
@@ -692,6 +707,19 @@
   .my-btn {
     margin-right: 20px;
   }
+
+  .my-alert {
+    margin: 0px 70px;
+    height: 40px;
+    line-height:40px;
+    padding-top: 5px;
+    visibility: collapse;
+    /*padding-left: 15px;*/
+  }
+
+  /*.my-alert strong {*/
+    /*font-size: ;*/
+  /*}*/
 
   #canvas {
     /*width: 1000px;*/
