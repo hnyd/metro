@@ -34,6 +34,10 @@ let context = {
 let mouseLineIndexId;
 let mouseLineIndexKey;
 let gridOptions;
+let trainErrorGridOptions;
+let signalErrorGridOptions;
+let doorErrorGridOptions;
+let stopErrorGridOptions;
 let idList = [];
 let showLineList = [19, 21, 20, 22, 23, 235, 24, 25, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66,
                     67, 82, 83, 84, 85, 86, 87, 102, 101, 100, 99, 98, 97, 81, 79, 80, 65, 78, 77,
@@ -204,6 +208,17 @@ let errorDialogStatus = '';
 let strMap = {
   'Signal': signalMap,
   'Stop': stopMap
+};
+let signalStatusMap = {
+  0: '故障',
+  1: '弯股',
+  2: '直行',
+  4: '禁止通行'
+};
+let stopStatusMap = {
+  0: '故障',
+  1: '正常',
+  2: '急停'
 };
 
 /**
@@ -411,6 +426,9 @@ function clickEventInit() {
     );
   });
 
+  /**
+   * 站场列车信息modal
+   */
   $('#trainInfoD').on('shown.bs.modal', function () {
     let trainList = link.getRunTrain();
     if (!gridOptions) {
@@ -444,6 +462,9 @@ function clickEventInit() {
     new agGrid.Grid(eGridDiv, gridOptions);
   });
 
+  /**
+   * 列车故障modal
+   */
   $('#error-train-dialog').on('shown.bs.modal', function () {
     let trainList = link.getRunTrain();
     if (!gridOptions) {
@@ -475,6 +496,109 @@ function clickEventInit() {
     gridOptions['rowData'] = rowData;
     let eGridDiv = document.querySelector('#error-train-info');
     new agGrid.Grid(eGridDiv, gridOptions);
+  });
+
+  /**
+   * 信号机故障modal
+   */
+  $('#error-signal-dialog').on('shown.bs.modal', function () {
+    let signalErrorMap = contModel.getErrorMap()['Signal'];
+    if (!signalErrorGridOptions) {
+      signalErrorGridOptions = {
+        suppressMovableColumns: true,
+      };
+    }
+    let columnDefs = [
+      {headerName: "信号机\\信息", field: "id", width: 150},
+      {headerName: "状态", field: "status", width: 150},
+      {headerName: "故障备注", field: "remark", width: 450}
+    ];
+    let rowData = [];
+    for (let k in signalErrorMap) {
+      let tmp = {};
+      tmp['id'] = k;
+      tmp['status'] = signalStatusMap[signalMap[k]['status']]
+      tmp['remark'] = signalErrorMap[k]['remark'];
+      rowData.push(tmp);
+    }
+    if (signalErrorGridOptions.hasOwnProperty('rowData')) {
+      signalErrorGridOptions.api.setRowData([]);
+      signalErrorGridOptions.api.updateRowData({add: rowData});
+      return;
+    }
+    signalErrorGridOptions['columnDefs'] = columnDefs;
+    signalErrorGridOptions['rowData'] = rowData;
+    let eGridDiv = document.querySelector('#error-signal-info');
+    new agGrid.Grid(eGridDiv, signalErrorGridOptions);
+  });
+
+  /**
+   * 急停按钮故障modal
+   */
+  $('#error-stop-dialog').on('shown.bs.modal', function () {
+    let stopErrorMap = contModel.getErrorMap()['Stop'];
+    if (!stopErrorGridOptions) {
+      stopErrorGridOptions = {
+        suppressMovableColumns: true,
+      };
+    }
+    let columnDefs = [
+      {headerName: "急停按钮\\信息", field: "id", width: 230},
+      {headerName: "状态", field: "status", width: 150},
+      {headerName: "故障备注", field: "remark", width: 370}
+    ];
+    let rowData = [];
+    for (let k in stopErrorMap) {
+      let tmp = {};
+      tmp['id'] = k;
+      tmp['status'] = stopErrorMap[stopMap[k]['status']];
+      tmp['remark'] = stopErrorMap[k]['remark'];
+      rowData.push(tmp);
+    }
+    if (stopErrorGridOptions.hasOwnProperty('rowData')) {
+      stopErrorGridOptions.api.setRowData([]);
+      stopErrorGridOptions.api.updateRowData({add: rowData});
+      return;
+    }
+    stopErrorGridOptions['columnDefs'] = columnDefs;
+    stopErrorGridOptions['rowData'] = rowData;
+    let eGridDiv = document.querySelector('#error-stop-info');
+    new agGrid.Grid(eGridDiv, stopErrorGridOptions);
+  });
+
+  /**
+   * 屏蔽门故障modal
+   */
+  $('#error-door-dialog').on('shown.bs.modal', function () {
+    let doorErrorMap = contModel.getErrorMap()['Door'];
+    if (!doorErrorGridOptions) {
+      doorErrorGridOptions = {
+        suppressMovableColumns: true,
+      };
+    }
+    let columnDefs = [
+      {headerName: "屏蔽门\\信息", field: "id", width: 150},
+      {headerName: "状态", field: "status", width: 150},
+      {headerName: "故障备注", field: "remark", width: 450}
+    ];
+    let rowData = [];
+    for (let k in doorErrorMap) {
+      let tmp = {};
+      tmp['id'] = k;
+      // TODO doorMap
+      // tmp['status'] = doorErrorMap[doorMap[k]['status']];
+      tmp['remark'] = doorErrorMap[k]['remark'];
+      rowData.push(tmp);
+    }
+    if (doorErrorGridOptions.hasOwnProperty('rowData')) {
+      doorErrorGridOptions.api.setRowData([]);
+      doorErrorGridOptions.api.updateRowData({add: rowData});
+      return;
+    }
+    doorErrorGridOptions['columnDefs'] = columnDefs;
+    doorErrorGridOptions['rowData'] = rowData;
+    let eGridDiv = document.querySelector('#error-door-info');
+    new agGrid.Grid(eGridDiv, doorErrorGridOptions);
   });
 
   $('#mockTrainD').on('shown.bs.modal', function () {
@@ -518,7 +642,8 @@ function clickEventInit() {
       trainIndex: trainIndex
     };
     link.addRunTrain(train);
-    alert('模拟列车添加成功');
+    // alert('模拟列车添加成功');
+    alert.primary('模拟列车添加成功')
     $('#mockTrainD').modal('hide');
     console.log('run link list: ', link.getRunTrain());
   });
@@ -531,7 +656,8 @@ function clickEventInit() {
     };
     errorMap[errorFlag] = mapData;
     contModel.setErrorMap(errorMap);
-    alert('注入故障成功');
+    // alert('注入故障成功');
+    alert.primary('注入故障成功');
     $('#add-error-dialog').modal('hide');
     console.log('error map:', errorMap);
 
