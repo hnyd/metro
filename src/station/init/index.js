@@ -8,7 +8,7 @@
 import axios from 'axios' // 引入未配置的axios服务
 import path from 'path'
 import xmlParser from 'xml2js'
-import {colorTrans, getFc} from "stationUtil"
+import {colorTrans, getFc, alert} from "stationUtil"
 import link from '../../model/link.js'
 import contModel from '../../model/context.js'
 import {system} from "../../util/sysUtil";

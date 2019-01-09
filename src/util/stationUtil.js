@@ -62,4 +62,33 @@ let isStationLine = function (id) {
   return boo;
 };
 
-export {initCVS, cvs, getFc, fabric, colorTrans, isStationLine}
+let alertMsg = '';
+
+let alert = {
+
+  primary: function (msg) {
+    $('#alert-dom').alert('close');
+    let content = '<div id="alert-dom" class="alert alert-primary alert-dismissible  my-alert" role="alert">\n'
+                  + msg
+                  + '      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">\n'
+                  + '        <span aria-hidden="true">&times;</span>\n'
+                  + '      </button>\n'
+                  + '    </div>';
+    $('#my-alert').append(content);
+  },
+
+  danger: function (msg) {
+    $('#alert-dom').alert('close');
+    let content = '<div id="alert-dom" class="alert alert-danger alert-dismissible my-alert" role="alert">\n'
+                  + msg
+                  + '      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">\n'
+                  + '        <span aria-hidden="true">&times;</span>\n'
+                  + '      </button>\n'
+                  + '    </div>';
+
+    $('#my-alert').append(content);
+  }
+
+};
+
+export {initCVS, cvs, getFc, fabric, colorTrans, isStationLine, alert}
