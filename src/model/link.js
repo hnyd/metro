@@ -40,6 +40,7 @@ let link = {
 
   addRunTrain: function (train) {
     runTrainList.push(train);
+    console.log('run link list: ', runTrainList);
   },
 
   getRunTrain: function () {
