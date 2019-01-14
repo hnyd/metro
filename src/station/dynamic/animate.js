@@ -70,6 +70,7 @@ function startRunTest() {
     let train = {
       id: 'train-test',
       type: 'real',
+      status: 0,
       direction: 'up',
       trainIndex: 0
     };

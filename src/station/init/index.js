@@ -220,6 +220,10 @@ let stopStatusMap = {
   1: '正常',
   2: '急停'
 };
+let trainStatusMap = {
+  0: '故障',
+  1: '正常'
+};
 
 /**
  * 站场初始化
@@ -431,6 +435,7 @@ function clickEventInit() {
    */
   $('#trainInfoD').on('shown.bs.modal', function () {
     let trainList = link.getRunTrain();
+    console.log('trainList:', trainList);
     if (!gridOptions) {
       gridOptions = {
         suppressMovableColumns: true,
@@ -466,36 +471,57 @@ function clickEventInit() {
    * 列车故障modal
    */
   $('#error-train-dialog').on('shown.bs.modal', function () {
+    let trainErrorMap = contModel.getErrorMap()['Train'];
+
     let trainList = link.getRunTrain();
-    if (!gridOptions) {
-      gridOptions = {
+    if (!trainErrorGridOptions) {
+      trainErrorGridOptions = {
         suppressMovableColumns: true,
       };
     }
     let columnDefs = [
       {headerName: "列车\\信息", field: "line", width: 150},
-      {headerName: "运行方向", field: "direction", width: 150},
-      {headerName: "列车类型", field: "type", width: 150},
-      {headerName: "状态", field: "status", width: 300}
+      {headerName: "运行方向", field: "direction", width: 100},
+      {headerName: "列车类型", field: "type", width: 100},
+      {headerName: "状态", field: "status", width: 100},
+      {headerName: "故障备注", field: "remark", width: 300}
     ];
     let rowData = [];
-    trainList.forEach(function (element, index, array) {
-      let tmp = {};
-      tmp['line'] = element['id'];
-      tmp['direction'] = element['direction'] === 'up' ? '上行' : '下行';
-      tmp['type'] = element['type'] === 'mock' ? '模拟' : '实体';
-      tmp['status'] = '正常';
-      rowData.push(tmp);
-    });
-    if (gridOptions.hasOwnProperty('rowData')) {
-      gridOptions.api.setRowData([]);
-      gridOptions.api.updateRowData({add: rowData});
+
+    // for (let k in trainErrorMap) {
+    //   let tmp = {};
+    //   tmp['id'] = k;
+    //   tmp['status'] = trainStatusMap[signalMap[k]['status']]
+    //   tmp['remark'] = trainErrorMap[k]['remark'];
+    //   rowData.push(tmp);
+    // }
+    if (trainErrorGridOptions.hasOwnProperty('rowData')) {
+      trainErrorGridOptions.api.setRowData([]);
+      trainErrorGridOptions.api.updateRowData({add: rowData});
       return;
     }
-    gridOptions['columnDefs'] = columnDefs;
-    gridOptions['rowData'] = rowData;
+    trainErrorGridOptions['columnDefs'] = columnDefs;
+    trainErrorGridOptions['rowData'] = rowData;
     let eGridDiv = document.querySelector('#error-train-info');
-    new agGrid.Grid(eGridDiv, gridOptions);
+    new agGrid.Grid(eGridDiv, trainErrorGridOptions);
+
+    // trainList.forEach(function (element, index, array) {
+    //   let tmp = {};
+    //   tmp['line'] = element['id'];
+    //   tmp['direction'] = element['direction'] === 'up' ? '上行' : '下行';
+    //   tmp['type'] = element['type'] === 'mock' ? '模拟' : '实体';
+    //   tmp['status'] = '正常';
+    //   rowData.push(tmp);
+    // });
+    // if (gridOptions.hasOwnProperty('rowData')) {
+    //   gridOptions.api.setRowData([]);
+    //   gridOptions.api.updateRowData({add: rowData});
+    //   return;
+    // }
+    // gridOptions['columnDefs'] = columnDefs;
+    // gridOptions['rowData'] = rowData;
+    // let eGridDiv = document.querySelector('#error-train-info');
+    // new agGrid.Grid(eGridDiv, gridOptions);
   });
 
   /**
@@ -638,6 +664,7 @@ function clickEventInit() {
     let train = {
       id: id,
       type: 'mock',
+      status: 1,
       direction: direction,
       trainIndex: trainIndex
     };
@@ -645,7 +672,6 @@ function clickEventInit() {
     // alert('模拟列车添加成功');
     alert.primary('模拟列车添加成功')
     $('#mockTrainD').modal('hide');
-    console.log('run link list: ', link.getRunTrain());
   });
 
   $('#addErrorBT').click(function () {
@@ -736,33 +762,33 @@ function initFabric() {
   fc.selection = false; // 画布取消应用组选择
 
   // 监听鼠标坐标位置
-  fc.on('mouse:move', function () {
-    if (document.getElementById('menu').style.visibility === 'visible') {
-      return; // 右键菜单显示时，不出现tip
-    }
-    let left = event.pageX + 15;
-    let top = event.pageY + 15;
-    let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
-    if (document.getElementById('coorTip')) {
-      let coorTip = document.getElementById('coorTip');
-      coorTip.style.left = left + 'px';
-      coorTip.style.top = top + 'px';
-      coorTip.innerText = content;
-    } else {
-      let coorTip = document.createElement('div');
-      coorTip.id = 'coorTip';
-      coorTip.style.left = left + 'px';
-      coorTip.style.top = top + 'px';
-      coorTip.style.width = 10 * content.length + 'px';
-      coorTip.style.height = '25px';
-      coorTip.style.textAlign = 'center';
-      coorTip.style.position = 'absolute';
-      coorTip.style.zIndex = 9998;
-      coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
-      coorTip.innerText = content;
-      document.body.appendChild(coorTip);
-    }
-  });
+  // fc.on('mouse:move', function () {
+  //   if (document.getElementById('menu').style.visibility === 'visible') {
+  //     return; // 右键菜单显示时，不出现tip
+  //   }
+  //   let left = event.pageX + 15;
+  //   let top = event.pageY + 15;
+  //   let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
+  //   if (document.getElementById('coorTip')) {
+  //     let coorTip = document.getElementById('coorTip');
+  //     coorTip.style.left = left + 'px';
+  //     coorTip.style.top = top + 'px';
+  //     coorTip.innerText = content;
+  //   } else {
+  //     let coorTip = document.createElement('div');
+  //     coorTip.id = 'coorTip';
+  //     coorTip.style.left = left + 'px';
+  //     coorTip.style.top = top + 'px';
+  //     coorTip.style.width = 10 * content.length + 'px';
+  //     coorTip.style.height = '25px';
+  //     coorTip.style.textAlign = 'center';
+  //     coorTip.style.position = 'absolute';
+  //     coorTip.style.zIndex = 9998;
+  //     coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
+  //     coorTip.innerText = content;
+  //     document.body.appendChild(coorTip);
+  //   }
+  // });
 
   // 监听鼠标右键
   fc.on('mouse:down', function (options) {
