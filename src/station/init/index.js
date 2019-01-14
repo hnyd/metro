@@ -551,7 +551,7 @@ function clickEventInit() {
     for (let k in stopErrorMap) {
       let tmp = {};
       tmp['id'] = k;
-      tmp['status'] = stopErrorMap[stopMap[k]['status']];
+      tmp['status'] = stopStatusMap[stopMap[k]['status']];
       tmp['remark'] = stopErrorMap[k]['remark'];
       rowData.push(tmp);
     }
@@ -656,7 +656,6 @@ function clickEventInit() {
     };
     errorMap[errorFlag] = mapData;
     contModel.setErrorMap(errorMap);
-    // alert('注入故障成功');
     alert.primary('注入故障成功');
     $('#add-error-dialog').modal('hide');
     console.log('error map:', errorMap);
@@ -682,6 +681,8 @@ function clickEventInit() {
         stopMap[errorId]['status'] = 0;
         paintStop();
         break;
+      case 'Door':
+
     }
 
     fc.renderAll();
@@ -710,6 +711,8 @@ function paint() {
 
   paintSignal();
   paintStop();
+
+  paintTips();
 }
 
 /**
@@ -733,33 +736,33 @@ function initFabric() {
   fc.selection = false; // 画布取消应用组选择
 
   // 监听鼠标坐标位置
-  // fc.on('mouse:move', function () {
-  //   if (document.getElementById('menu').style.visibility === 'visible') {
-  //     return; // 右键菜单显示时，不出现tip
-  //   }
-  //   let left = event.pageX + 15;
-  //   let top = event.pageY + 15;
-  //   let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
-  //   if (document.getElementById('coorTip')) {
-  //     let coorTip = document.getElementById('coorTip');
-  //     coorTip.style.left = left + 'px';
-  //     coorTip.style.top = top + 'px';
-  //     coorTip.innerText = content;
-  //   } else {
-  //     let coorTip = document.createElement('div');
-  //     coorTip.id = 'coorTip';
-  //     coorTip.style.left = left + 'px';
-  //     coorTip.style.top = top + 'px';
-  //     coorTip.style.width = 10 * content.length + 'px';
-  //     coorTip.style.height = '25px';
-  //     coorTip.style.textAlign = 'center';
-  //     coorTip.style.position = 'absolute';
-  //     coorTip.style.zIndex = 9998;
-  //     coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
-  //     coorTip.innerText = content;
-  //     document.body.appendChild(coorTip);
-  //   }
-  // });
+  fc.on('mouse:move', function () {
+    if (document.getElementById('menu').style.visibility === 'visible') {
+      return; // 右键菜单显示时，不出现tip
+    }
+    let left = event.pageX + 15;
+    let top = event.pageY + 15;
+    let content = '坐标 x: ' + event.pageX + ' y:' + event.pageY;
+    if (document.getElementById('coorTip')) {
+      let coorTip = document.getElementById('coorTip');
+      coorTip.style.left = left + 'px';
+      coorTip.style.top = top + 'px';
+      coorTip.innerText = content;
+    } else {
+      let coorTip = document.createElement('div');
+      coorTip.id = 'coorTip';
+      coorTip.style.left = left + 'px';
+      coorTip.style.top = top + 'px';
+      coorTip.style.width = 10 * content.length + 'px';
+      coorTip.style.height = '25px';
+      coorTip.style.textAlign = 'center';
+      coorTip.style.position = 'absolute';
+      coorTip.style.zIndex = 9998;
+      coorTip.style.background = 'rgba(255, 255, 255, 0.8)';
+      coorTip.innerText = content;
+      document.body.appendChild(coorTip);
+    }
+  });
 
   // 监听鼠标右键
   fc.on('mouse:down', function (options) {
@@ -1367,6 +1370,362 @@ function paintStop() {
   }
   contModel.setFcStopMap(fcStopMap);
   // console.log("fcStopMap:", contModel.getFcStopMap());
+}
+
+function paintTips() {
+  let tipFcList = [];
+
+  // Signal
+  tipFcList.push(new fabric.Text('信号机 : ', {
+    left: 188,
+    top: 520,
+    fontSize: 20,
+    fill: '#9A9A9A',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188, top: 555
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 23, top: 555
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 46, top: 555
+      }
+  ));
+  tipFcList.push(new fabric.Text('故障', {
+    left: 267,
+    top: 556,
+    fontSize: 17,
+    fill: '#9A9A9A',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'red', left: 188, top: 585
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 23, top: 585
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 46, top: 585
+      }
+  ));
+  tipFcList.push(new fabric.Text('禁止通行', {
+    left: 267,
+    top: 586,
+    fontSize: 17,
+    fill: 'red',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188, top: 615
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'green', left: 188 + 23, top: 615
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 46, top: 615
+      }
+  ));
+  tipFcList.push(new fabric.Text('直行', {
+    left: 267,
+    top: 616,
+    fontSize: 17,
+    fill: 'green',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188, top: 645
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 188 + 23, top: 645
+      }
+  ));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'yellow', left: 188 + 46, top: 645
+      }
+  ));
+  tipFcList.push(new fabric.Text('弯股', {
+    left: 267,
+    top: 646,
+    fontSize: 17,
+    fill: 'yellow',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+
+  // Stop
+  tipFcList.push(new fabric.Text('急停按钮 : ', {
+    left: 440,
+    top: 520,
+    fontSize: 20,
+    fill: '#9A9A9A',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'gray', left: 440, top: 555
+      }
+  ));
+  tipFcList.push(new fabric.Text('故障', {
+    left: 473,
+    top: 556,
+    fontSize: 17,
+    fill: '#9A9A9A',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'red', left: 440, top: 585
+      }
+  ));
+  tipFcList.push(new fabric.Text('急停', {
+    left: 473,
+    top: 586,
+    fontSize: 17,
+    fill: 'red',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  tipFcList.push(new fabric.Circle(
+      {
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        radius: 10, fill: 'green', left: 440, top: 615
+      }
+  ));
+  tipFcList.push(new fabric.Text('正常', {
+    left: 473,
+    top: 616,
+    fontSize: 17,
+    fill: 'green',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+
+  // Train
+  tipFcList.push(new fabric.Text('列车 : ', {
+    left: 692,
+    top: 520,
+    fontSize: 20,
+    fill: '#9A9A9A',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  let normalTrain = new fabric.Rect(
+      {
+        left: 692,
+        top: 555,
+        fill: 'green',
+        width: 40,
+        height: 20,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+      }
+  );
+  tipFcList.push(normalTrain);
+  tipFcList.push(new fabric.Triangle(
+      {
+        left: normalTrain.left + 50,
+        top: normalTrain.top,
+        width: 20,
+        height: 7,
+        fill: 'green',
+        angle: 90,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+      }
+  ));
+  tipFcList.push(new fabric.Text('正常', {
+    left: 749,
+    top: 556,
+    fontSize: 17,
+    fill: 'green',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+  let errorTrain = new fabric.Rect(
+      {
+        left: 692,
+        top: 585,
+        fill: 'red',
+        width: 40,
+        height: 20,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      }
+  );
+  tipFcList.push(errorTrain);
+  tipFcList.push(new fabric.Triangle(
+      {
+        left: errorTrain.left + 50,
+        top: errorTrain.top,
+        width: 20,
+        height: 7,
+        fill: 'red',
+        angle: 90,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true
+      }
+  ));
+  tipFcList.push(new fabric.Text('故障', {
+    left: 749,
+    top: 585,
+    fontSize: 17,
+    fill: 'red',
+    lockMovementX: true,
+    lockMovementY: true,
+    lockRotation: true,
+    lockScalingX: true,
+    lockScalingY: true
+  }));
+
+  tipFcList.forEach(function (element, index, array) {
+    fc.add(element);
+  });
 }
 
 function paintSwitch() {
