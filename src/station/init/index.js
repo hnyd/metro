@@ -437,6 +437,46 @@ function clickEventInit() {
   });
 
   /**
+   * 撤销信号机故障
+   */
+  $('#removeSignalError').click(function () {
+    let errorModel = contModel.getErrorModel();
+    let errorMap = contModel.getErrorMap();
+    let signalErrorMap = errorMap['Signal'];
+    if (signalErrorMap.hasOwnProperty(errorModel['errorId'])) {
+      delete signalErrorMap[errorModel['errorId']];
+      errorMap['Signal'] = signalErrorMap;
+      contModel.setErrorMap(errorMap);
+      alert.primary('撤销故障成功！');
+      signalMap[errorModel['errorId']]['status'] = 4;
+      paintSignal();
+    } else {
+      alert.danger('该元素未处于故障状态，不能执行撤销故障操作!');
+    }
+    closeAllMenu();
+  });
+
+  /**
+   * 撤销急停按钮故障
+   */
+  $('#removeStopError').click(function () {
+    let errorModel = contModel.getErrorModel();
+    let errorMap = contModel.getErrorMap();
+    let stopErrorMap = errorMap['Stop'];
+    if (stopErrorMap.hasOwnProperty(errorModel['errorId'])) {
+      delete stopErrorMap[errorModel['errorId']];
+      errorMap['Stop'] = stopErrorMap;
+      contModel.setErrorMap(errorMap);
+      alert.primary('撤销故障成功！');
+      stopMap[errorModel['errorId']]['status'] = 1;
+      paintStop();
+    } else {
+      alert.danger('该元素未处于故障状态，不能执行撤销故障操作!');
+    }
+    closeAllMenu();
+  });
+
+  /**
    * 站场列车信息modal
    */
   $('#trainInfoD').on('shown.bs.modal', function () {

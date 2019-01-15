@@ -46,7 +46,7 @@ let signal = {
     "y": 484,
     "whetherShow": true,
     "whetherUse": false,
-    "status": 0,
+    "status": 4,
     "turnoutId": 3,
     "contentName": "sgn-03",
     "contentNameX": 0,
@@ -152,7 +152,7 @@ let stop = {
     "stageId": 3,
     "whetherShow": true,
     "whetherUse": false,
-    "status": 0,
+    "status": 1,
     "color": 1,
     "faultColor": -1,
     "stopColor": -1
@@ -320,7 +320,7 @@ let stop = {
     "stageId": 25,
     "whetherShow": true,
     "whetherUse": false,
-    "status": 0,
+    "status": 1,
     "color": 1,
     "faultColor": -1,
     "stopColor": -1
