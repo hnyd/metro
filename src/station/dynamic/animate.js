@@ -25,6 +25,11 @@ let fcLineMap;
 
 let trainIndex = 0;
 
+let trainStatusMap = {
+  0: '故障',
+  1: '正常'
+};
+
 let animateInit = function () {
   $('#startRun').click(startRunTest);
   $('#stopRun').click(stopRunTest);
@@ -116,6 +121,28 @@ function trainAnimation() {
             height: 20
           }
       );
+      // trainEntity.on('mousedown', function (options) {
+      //   console.log('sdsdsds')
+      //   let errorModel = {
+      //     errorId: trainData['id'],
+      //     errorFlag: 'Train',
+      //     errorDialogType: '列车',
+      //     errorDialogStatus: trainStatusMap[trainData['status']]
+      //   };
+      //   context.setErrorModel(errorModel);
+      //   document.getElementById('menu').style.visibility = 'hidden';
+      //   let menu = document.getElementById('trainMenu');
+      //   if (options.button && options.button === 3) {
+      //     let left = event.pageX + 15;
+      //     let top = event.pageY + 15;
+      //     menu.style.left = left + 'px';
+      //     menu.style.top = top + 'px';
+      //     menu.style.visibility = 'visible';
+      //   } else if (options.button && options.button === 1) {
+      //     menu.style.visibility = 'hidden';
+      //   }
+      // });
+
       fc.add(trainEntity);
       link.addRunTrainFc(trainData['id'], trainEntity);
     }

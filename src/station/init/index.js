@@ -200,10 +200,6 @@ let fcSignalMap = {};
 let fcStopMap = {};
 
 let errorMap = contModel.getErrorMap();
-let errorId = -1;
-let errorFlag = '';
-let errorDialogType = '';
-let errorDialogStatus = '';
 
 let strMap = {
   'Signal': signalMap,
@@ -374,6 +370,16 @@ function clickEventInit() {
         });
   });
 
+  $('#addTrainError').click(function () {
+    closeAllMenu();
+    $('#add-error-dialog').modal(
+        {
+          backdrop: 'static',
+          keyboard: false
+        });
+  });
+
+
   /**
    * 站场列车信息按钮
    */
@@ -436,17 +442,17 @@ function clickEventInit() {
   $('#trainInfoD').on('shown.bs.modal', function () {
     let trainList = link.getRunTrain();
     console.log('trainList:', trainList);
-    if (!gridOptions) {
-      gridOptions = {
-        suppressMovableColumns: true,
-      };
-    }
     let columnDefs = [
       {headerName: "列车\\信息", field: "line", width: 150},
       {headerName: "运行方向", field: "direction", width: 150},
       {headerName: "列车类型", field: "type", width: 150},
       {headerName: "状态", field: "status", width: 300}
     ];
+    if (!gridOptions) {
+      gridOptions = {
+        suppressMovableColumns: true
+      };
+    }
     let rowData = [];
     trainList.forEach(function (element, index, array) {
       let tmp = {};
@@ -480,21 +486,26 @@ function clickEventInit() {
       };
     }
     let columnDefs = [
-      {headerName: "列车\\信息", field: "line", width: 150},
+      {headerName: "列车\\信息", field: "id", width: 150},
       {headerName: "运行方向", field: "direction", width: 100},
       {headerName: "列车类型", field: "type", width: 100},
       {headerName: "状态", field: "status", width: 100},
       {headerName: "故障备注", field: "remark", width: 300}
     ];
     let rowData = [];
+    trainList.forEach(function (element, index, array) {
+      if (element['status'] !== 0) {
+        return;
+      }
+      let tmp = {};
+      tmp['id'] = element['id'];
+      tmp['direction'] = element['direction'] === 'up' ? '上行' : '下行';
+      tmp['type'] = element['type'] === 'mock' ? '模拟' : '实体';
+      tmp['status'] = trainStatusMap[element['status']];
+      tmp['remark'] = trainErrorMap[element['id']]['remark'];
+      rowData.push(tmp);
+    });
 
-    // for (let k in trainErrorMap) {
-    //   let tmp = {};
-    //   tmp['id'] = k;
-    //   tmp['status'] = trainStatusMap[signalMap[k]['status']]
-    //   tmp['remark'] = trainErrorMap[k]['remark'];
-    //   rowData.push(tmp);
-    // }
     if (trainErrorGridOptions.hasOwnProperty('rowData')) {
       trainErrorGridOptions.api.setRowData([]);
       trainErrorGridOptions.api.updateRowData({add: rowData});
@@ -635,8 +646,9 @@ function clickEventInit() {
   });
 
   $('#add-error-dialog').on('shown.bs.modal', function () {
-    $('#errorDialogType').text("元素:   " + errorDialogType);
-    $('#errorDialogStatus').text("当前状态:   " + errorDialogStatus);
+    let errorModel = contModel.getErrorModel();
+    $('#errorDialogType').text("元素:   " + errorModel['errorDialogType']);
+    $('#errorDialogStatus').text("当前状态:   " + errorModel['errorDialogStatus']);
   });
 
   $('#addMockTrainBT').click(function () {
@@ -675,40 +687,28 @@ function clickEventInit() {
   });
 
   $('#addErrorBT').click(function () {
+    let errorModel = contModel.getErrorModel();
+
     let remark = $('#errorRemark').val();
-    let mapData = errorMap[errorFlag];
-    mapData[errorId] = {
+    let mapData = errorMap[errorModel['errorFlag']];
+    mapData[errorModel['errorId']] = {
       'remark': remark
     };
-    errorMap[errorFlag] = mapData;
+    errorMap[errorModel['errorFlag']] = mapData;
     contModel.setErrorMap(errorMap);
     alert.primary('注入故障成功');
     $('#add-error-dialog').modal('hide');
     console.log('error map:', errorMap);
 
-    switch (errorFlag) {
+    switch (errorModel['errorFlag']) {
       case 'Signal':
-        signalMap[errorId]['status'] = 0;
-        // fcSignalMap[errorId][0].set(
-        //     {
-        //       fill: 'gray'
-        //     });
-        // fcSignalMap[errorId][1].set(
-        //     {
-        //       fill: 'gray'
-        //     });
-        // fcSignalMap[errorId][2].set(
-        //     {
-        //       fill: 'gray'
-        //     });
+        signalMap[errorModel['errorId']]['status'] = 0;
         paintSignal();
         break;
       case 'Stop':
-        stopMap[errorId]['status'] = 0;
+        stopMap[errorModel['errorId']]['status'] = 0;
         paintStop();
         break;
-      case 'Door':
-
     }
 
     fc.renderAll();
@@ -1264,10 +1264,13 @@ function paintCircle(id, x, y, status) {
     fc.renderAll();
   });
   cover.on('mousedown', function (options) {
-    errorId = id;
-    errorFlag = 'Signal';
-    errorDialogType = '信号机';
-    errorDialogStatus = statusMsg.substr(4);
+    let errorModel = {
+      errorId: id,
+      errorFlag: 'Signal',
+      errorDialogType: '信号机',
+      errorDialogStatus: statusMsg.substr(4)
+    };
+    contModel.setErrorModel(errorModel);
 
     document.getElementById('menu').style.visibility = 'hidden';
     let menu = document.getElementById('signalMenu');
@@ -1374,10 +1377,13 @@ function paintStop() {
       fc.renderAll();
     });
     circle.on('mousedown', function (options) {
-      errorId = id;
-      errorFlag = 'Stop';
-      errorDialogType = '急停按钮';
-      errorDialogStatus = statusMsg.substr(4);
+      let errorModel = {
+        errorId: id,
+        errorFlag: 'Stop',
+        errorDialogType: '急停按钮',
+        errorDialogStatus: statusMsg.substr(4)
+      };
+      contModel.setErrorModel(errorModel);
 
       document.getElementById('menu').style.visibility = 'hidden';
       let menu = document.getElementById('stopMenu');

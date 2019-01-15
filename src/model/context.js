@@ -411,6 +411,7 @@ let fcStopMap = {};
 let errorMap = {
   "Train": {}, "Signal": {}, "Stop": {}, "Door": {}
 };
+let errorModel = {};
 
 let context = {
 
@@ -465,6 +466,14 @@ let context = {
   setErrorMap: function (map) {
     errorMap = map
   },
+
+  getErrorModel: function () {
+    return errorModel;
+  },
+
+  setErrorModel: function (model) {
+    errorModel = model
+  }
 
 };
 
